@@ -1,11 +1,11 @@
-var createError = require('http-errors');
-var database = require('../database/database')
-var folders = require('../model/folders')
+const createError = require('http-errors');
+const database = require('../database/database')
+const folders = require('../model/folders')
 
-const createFolder = async function (leader, name, emogi, color) {
+const createFolder = async function (leader, name, emoji, color) {
   const conn = database.createConnection();
 
-  const sql1 = `INSERT INTO Folders (user_id, leader, name, emoji, color) VALUES ('${leader}', '${leader}', ${name}', '${emoji}', '${color}');`;
+  const sql1 = `INSERT INTO Folders (user_id, leader, name, emoji, color) VALUES ('${leader}', '${leader}', '${name}', '${emoji}', '${color}');`;
   const result = await database.query(conn, sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS folder_id;`;
@@ -66,7 +66,4 @@ const deleteFolder = async function (folderId) {
   return result1;
 };
 
-module.export = createFolder;
-module.export = getFolder;
-module.export = modifyFolder;
-module.export = deleteFolder;
+module.exports = { createFolder, getFolder, modifyFolder, deleteFolder };

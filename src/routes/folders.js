@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var folder = require('../database/folders')
+const express = require('express');
+const router = express.Router();
+const folder = require('../database/folders')
 
 // 폴더 추가 - 폴더 생성
 /**
@@ -33,11 +33,11 @@ var folder = require('../database/folders')
  */
 router.post('/', function(req, res, next) {
   const folderName = req.body["name"];
-  const folderEmogi = req.body["emoji"];
+  const folderEmoji = req.body["emoji"];
   const folderColor = req.body["color"];
   const folderLeader = req.body["user_id"];
 
-  folder.createFolder(folderLeader, folderName, folderEmogi, folderColor)
+  folder.createFolder(folderLeader, folderName, folderEmoji, folderColor)
     .then((user) => {
       res.status(200).json(user);
     })

@@ -1,6 +1,6 @@
-var createError = require('http-errors');
-var database = require('../database/database')
-var lists = require('../model/lists')
+const createError = require('http-errors');
+const database = require('../database/database')
+const lists = require('../model/lists')
 
 const createList = async function (folderId, name, location, memo, image) {
   const conn = database.createConnection();
@@ -58,15 +58,12 @@ const deleteList = async function (listId) {
   const conn = database.createConnection();
 
   const sql1 = `DELETE FROM Lists WHERE list_id = ${listId};`;
-  const sql2 = `DELETE FROM Reviews WHERE list_id = ${listId};`;
+  //const sql2 = `DELETE FROM Reviews WHERE list_id = ${listId};`;
 
   const result1 = await database.query(conn, sql1);
-  const result2 = await database.query(conn, sql2);
+  //const result2 = await database.query(conn, sql2);
 
   return result1;
 };
 
-module.export = createList;
-module.export = getList;
-module.export = modifyList;
-module.export = deleteList;
+module.exports = { createList, getList, modifyList, deleteList };

@@ -1,13 +1,17 @@
-var createError = require('http-errors');
-var express = require('express');
-var logger = require('morgan');
-var http = require('http');
+const createError = require('http-errors');
+const express = require('express');
+const logger = require('morgan');
+const path = require('path');
+const http = require('http');
 
-var usersRouter = require('../routes/users');
-var foldersRouter = require('../routes/folders');
-var listsRouter = require('../routes/lists');
+const usersRouter = require('../routes/users');
+const foldersRouter = require('../routes/folders');
+const listsRouter = require('../routes/lists');
 
-var app = express();
+const app = express();
+
+app.set('views', path.join(__dirname, '../../views'));
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -32,8 +36,13 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.set('port', 3000);
-var server = http.createServer(app);
-server.listen(3000);
+const server = app.listen(3000, function () {
+  const port = server.address();
+  console.log("Express server listening on port " + port.port);
+});
+
+//app.set('port', 3000);
+//const server = http.createServer(app);
+//server.listen(3000);
 
 module.exports = app;

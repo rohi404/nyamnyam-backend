@@ -11,4 +11,4 @@ const convertToFolder = function(result) {
   }
 };
 
-module.export = convertToFolder;
+module.exports = { convertToFolder };

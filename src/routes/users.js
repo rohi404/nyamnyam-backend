@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var user = require('../database/users')
+const express = require('express');
+const router = express.Router();
+const user = require('../database/users')
 
 // 회원가입 - 유저 등록
 /**
@@ -74,7 +74,6 @@ router.get('/:userId', function (req, res, next) {
       next(err);
     })
 });
-
 
 // 유저 정보 수정(닉네임, 프로필사진, 배경사진만 가능)
 /**

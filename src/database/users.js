@@ -1,6 +1,6 @@
-var createError = require('http-errors');
-var database = require('../database/database')
-var users = require('../model/users')
+const createError = require('http-errors');
+const database = require('../database/database')
+const users = require('../model/users')
 
 const createUser = async function (id, password, nickname, image, background) {
   const conn = database.createConnection();
@@ -57,7 +57,4 @@ const deleteUser = async function (userId) {
   return result1;
 };
 
-module.exports = createUser;
-module.exports = getUser;
-module.exports = modifyUser;
-module.exports = deleteUser;
+module.exports = { createUser, getUser, modifyUser, deleteUser };

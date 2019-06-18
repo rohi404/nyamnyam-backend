@@ -10,4 +10,4 @@ const convertToList = function(result) {
   }
 };
 
-module.export = convertToList;
+module.exports = { convertToList };

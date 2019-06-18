@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var list = require('../database/lists')
+const express = require('express');
+const router = express.Router();
+const list = require('../database/lists')
 
 // 리스트 추가
 /**

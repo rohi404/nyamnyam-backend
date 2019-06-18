@@ -10,4 +10,4 @@ const convertToUser = function(result) {
   }
 };
 
-module.exports = convertToUser;
+module.exports = { convertToUser };

@@ -1,5 +1,5 @@
-var mysql = require('mysql');
-var credentials = require('../utills/credentials');
+const mysql = require('mysql');
+const credentials = require('../utills/credentials');
 
 const createConnection = function() {
   return mysql.createConnection(credentials.mysqlConfig);
@@ -29,7 +29,4 @@ const queryOne = async function (sql) {
   return results;
 };
 
-module.export = createConnection;
-module.export = endConnection;
-module.export = queryOne;
-module.export = query;
+module.exports = { createConnection, endConnection, query, queryOne };
