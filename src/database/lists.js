@@ -28,7 +28,7 @@ const getList = async function (listId) {
   return await lists.convertToList(listResult[0]);
 };
 
-const modifyList = async function (listId, listName, listLocation, listMemo, listImage) {
+const modifyList = async function (listId, listName, listLocation, listMemo, listImage, wantCount, likeCount) {
   const queries = [];
 
   if (listName != undefined) {
@@ -46,6 +46,12 @@ const modifyList = async function (listId, listName, listLocation, listMemo, lis
     //const updateUser = currentUser.concat(",", folderUser)
 
     queries.push(`image=\'${listImage}\'`);
+  }
+  if (wantCount != undefined) {
+    queries.push(`want_count=\'${wantCount}\'`);
+  }
+  if (likeCount != undefined) {
+    queries.push(`like_count=\'${likeCount}\'`);
   }
 
   const sql = `UPDATE Lists SET ${queries.join(", ")} WHERE list_id = ${listId};`;

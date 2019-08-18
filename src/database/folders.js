@@ -5,15 +5,18 @@ const folders = require('../model/folders')
 const createFolder = async function (leader, name, emoji, color) {
   const conn = database.createConnection();
 
-  const sql1 = `INSERT INTO Folders (user_id, leader, name, emoji, color) VALUES ('${leader}', '${leader}', '${name}', '${emoji}', '${color}');`;
+  const sql1 = `INSERT INTO Folders (leader, name, emoji, color) VALUES ('${leader}', '${name}', '${emoji}', '${color}');`;
   const result = await database.query(conn, sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS folder_id;`;
   const result2 = await database.query(conn, sql2);
 
-  database.endConnection(conn);
-
   const folderId = result2[0]["folder_id"];
+
+  const sql3 = `INSERT INTO Members (user_id, folder_id) VALUES ('${leader}', '${folderId}');`;
+  const result3 = await database.query(conn, sql3);
+
+  database.endConnection(conn);
   return await getFolder(folderId);
 };
 
@@ -28,7 +31,7 @@ const getFolder = async function (folderId) {
   return await folders.convertToFolder(folderResult[0]);
 };
 
-const modifyFolder = async function (folderId, folderName, folderEmoji, folderColor, folderUser) {
+const modifyFolder = async function (folderId, folderName, folderEmoji, folderColor) {
   const queries = [];
 
   if (folderName != undefined) {
@@ -39,13 +42,6 @@ const modifyFolder = async function (folderId, folderName, folderEmoji, folderCo
   }
   if (folderColor != undefined) {
     queries.push(`color=\'${folderColor}\'`);
-  }
-  if (folderUser != undefined) {
-    const currentFolder = getFolder(folderId);
-    const currentUser = currentFolder["userId"];
-    const updateUser = currentUser.concat(",", folderUser)
-
-    queries.push(`user_id=\'${updateUser}\'`);
   }
 
   const sql = `UPDATE Folders SET ${queries.join(", ")} WHERE folder_id = ${folderId};`;
