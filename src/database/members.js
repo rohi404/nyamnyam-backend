@@ -29,8 +29,10 @@ const getMember = async function (memberId) {
 };
 
 const getUserFolders = async function (userId) {
+  const conn = database.createConnection();
+  
   const sql = `SELECT * FROM Members WHERE user_id = ${userId}`;
-  const memberResult = await database.query(sql);
+  const memberResult = await database.query(conn, sql);
 
   if (memberResult.length == 0) {
     throw createError(404, `There is no users with user Id is ${userId}`);
@@ -40,8 +42,10 @@ const getUserFolders = async function (userId) {
 };
 
 const getFolderUsers = async function (folderId) {
+  const conn = database.createConnection();
+
   const sql = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
-  const memberResult = await database.query(sql);
+  const memberResult = await database.query(conn, sql);
 
   if (memberResult.length == 0) {
     throw createError(404, `There is no folder with folder Id is ${folderId}`);
