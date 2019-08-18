@@ -29,39 +29,25 @@ const getMember = async function (memberId) {
 };
 
 const getUserFolders = async function (userId) {
-  const conn = database.createConnection();
-
   const sql = `SELECT * FROM Members WHERE user_id = ${userId}`;
-  const memberResult = await database.query(conn, sql);
+  const memberResult = await database.query(sql);
 
   if (memberResult.length == 0) {
     throw createError(404, `There is no users with user Id is ${userId}`);
   }
 
-  const result = []
-  for (let i=0; i<memberResult.length; i++) {
-    result.push(members.convertToMember(memberResult[i]));
-  }
-
-  return result;
+  return await members.convertToMember(memberResult);
 };
 
 const getFolderUsers = async function (folderId) {
-  const conn = database.createConnection();
-
   const sql = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
-  const memberResult = await database.query(conn, sql);
+  const memberResult = await database.query(sql);
 
   if (memberResult.length == 0) {
     throw createError(404, `There is no folder with folder Id is ${folderId}`);
   }
 
-  const result = []
-  for (let i=0; i<memberResult.length; i++) {
-    result.push(members.convertToMember(memberResult[i]));
-  }
-
-  return result;
+  return await members.convertToMember(memberResult);
 };
 
 const deleteMember = async function (userId, folderId) {
