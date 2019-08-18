@@ -6,23 +6,21 @@ const member = require('../database/members')
 /**
  * @api {get} /members/userfolders/:userId Get UserFolders
  * @apiName GetUserFolders
- * @apiGroup User
+ * @apiGroup Member
  *
  * @apiParam (path) {Number} userId userId.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  *[ 
  *  {
- *     "name": "folder1",
- *     "emoji": "013",
- *     "color": "#ffffff",
- *     "payload": {}
+ *     "Id": 1,
+ *     "user_id": 1,
+ *     "folder_id": 2,
  *  },
  *  {
- *     "name": "folder2",
- *     "emoji": "015",
- *     "color": "#ffffff",
- *     "payload": {}
+ *     "Id": 2,
+ *     "user_id": 1,
+ *     "folder_id": 1,
  *  }
  * ]
  */

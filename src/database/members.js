@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const database = require('../database/database')
 const members = require('../model/members')
+const folder = require('../database/folders')
 
 const createMember = async function (userId, folderId) {
   const conn = database.createConnection();
@@ -18,11 +19,11 @@ const createMember = async function (userId, folderId) {
 };
 
 const getMember = async function (memberId) {
-  const sql = `SELECT * FROM Members WHERE id = ${memberId}`;
+  const sql = `SELECT * FROM Members WHERE id = ${memberId};`;
   const memberResult = await database.queryOne(sql);
 
   if (memberResult.length == 0) {
-    throw createError(404, `There is no users with user Id is ${memberId}`);
+    throw createError(404, `There is no users with user Id is ${memberId};`);
   }
 
   return await members.convertToMember(memberResult[0]);
@@ -30,13 +31,20 @@ const getMember = async function (memberId) {
 
 const getUserFolders = async function (userId) {
   const sql = `SELECT * FROM Members WHERE user_id = ${userId}`;
-  const memberResult = await database.query(sql);
 
+  const memberResult = await database.query(conn, sql);
   if (memberResult.length == 0) {
-    throw createError(404, `There is no users with user Id is ${userId}`);
+    throw createError(404, `There is no users with user Id is ${userId};`);
   }
 
-  return await members.convertToMember(memberResult);
+  const result = []
+  for (let i=0; i<memberResult.length; i++) {
+    let name = members.convertToMember(memberResult[i])["folderId"]
+    let tmp = await folder.getFolder(name)
+    result.push(tmp);
+  }
+  return result;
+
 };
 
 const getFolderUsers = async function (folderId) {
@@ -47,7 +55,12 @@ const getFolderUsers = async function (folderId) {
     throw createError(404, `There is no folder with folder Id is ${folderId}`);
   }
 
-  return await members.convertToMember(memberResult);
+  const result = []
+  for (let i=0; i<memberResult.length; i++) {
+    result.push(members.convertToMember(memberResult[i])["userId"]);
+  }
+
+  return result;
 };
 
 const deleteMember = async function (userId, folderId) {
