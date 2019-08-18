@@ -26,7 +26,7 @@ const member = require('../database/members')
  *  }
  * ]
  */
-router.get('userfolders/:userId', function (req, res, next) {
+router.get('/userfolders/:userId', function (req, res, next) {
   const userId = req.params["userId"];
 
   member.getUserFolders(userId)
@@ -68,7 +68,7 @@ router.get('userfolders/:userId', function (req, res, next) {
  *  }
  * ]
  */
-router.get('folderusers/:folderId', function (req, res, next) {
+router.get('/folderusers/:folderId', function (req, res, next) {
     const folderId = req.params["folderId"];
 
     member.getFolderUsers(folderId)
