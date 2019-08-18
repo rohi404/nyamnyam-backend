@@ -2,6 +2,8 @@ const createError = require('http-errors');
 const database = require('../database/database')
 const members = require('../model/members')
 const folder = require('../database/folders')
+const user = require('../database/users')
+
 
 const createMember = async function (userId, folderId) {
   const conn = database.createConnection();
@@ -47,19 +49,22 @@ const getUserFolders = async function (userId) {
 };
 
 const getFolderUsers = async function (folderId) {
+  const conn = database.createConnection();  
   const sql = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
-  const memberResult = await database.query(sql);
-
+ 
+  const memberResult = await database.query(conn, sql);
   if (memberResult.length == 0) {
     throw createError(404, `There is no folder with folder Id is ${folderId}`);
   }
 
   const result = []
   for (let i=0; i<memberResult.length; i++) {
-    result.push(members.convertToMember(memberResult[i])["userId"]);
+    let name = members.convertToMember(memberResult[i])["userId"];
+    let tmp = await user.getUser(name);
+    result.push(tmp);
   }
 
-  return result;
+  return await result;
 };
 
 const deleteMember = async function (userId, folderId) {

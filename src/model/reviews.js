@@ -3,7 +3,9 @@ const convertToReview = function(result) {
     Id: parseInt(result['id']),
     userId: parseInt(result['user_id']),
     listId: parseInt(result['list_id']),
-    create_date: result['reg_date'],
+    content: result['content'],
+    image: result['image'],
+    reg_date: result['reg_date'],
   }
 };
 
