@@ -7,6 +7,7 @@ const http = require('http');
 const usersRouter = require('../routes/users');
 const foldersRouter = require('../routes/folders');
 const listsRouter = require('../routes/lists');
+const membersRouter = require('../routes/members');
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.use('/', express.static("./apidoc"));
 app.use('/users', usersRouter);
 app.use('/folders', foldersRouter);
 app.use('/lists', listsRouter);
+app.use('/members', membersRouter);
+
 
 app.use(function(req, res, next) {
   next(createError(404));
