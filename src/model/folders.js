@@ -1,7 +1,6 @@
 const convertToFolder = function(result) {
   return {
     folderId: parseInt(result['folder_id']),
-    userId: result['user_id'],
     leader: parseInt(result['leader']),
     name: result['name'],
     emoji: result['emoji'],

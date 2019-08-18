@@ -7,10 +7,12 @@
     "apidoc": "apidoc -i src/ -o apidoc/ -e node_modules/"
   },
   "dependencies": {
+    "apidoc": "^0.17.7",
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
-    "mysql": "^2.17.1"
+    "mysql": "^2.17.1",
+    "pug": "^2.0.4"
   }
 }
