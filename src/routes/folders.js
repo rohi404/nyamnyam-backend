@@ -14,7 +14,6 @@ const folder = require('../database/folders')
  *     "name": "folder1",
  *     "emoji": "013",
  *     "color": "#ffffff",
- *     "user_id": "1",
  *     "payload": {}
  * }
  *
@@ -22,7 +21,6 @@ const folder = require('../database/folders')
  * HTTP/1.1 200 OK
  * {
  *     "folder_id": 1,
- *     "user_id": "1",
  *     "leader": 1,
  *     "name": "folder1"
  *     "emoji": "013",
@@ -57,7 +55,6 @@ router.post('/', function(req, res, next) {
  * HTTP/1.1 200 OK
  * {
  *     "folder_id": 1,
- *     "user_id": "1,2,3",
  *     "leader": 1,
  *     "name": "folder1"
  *     "emoji": "013",
@@ -91,7 +88,6 @@ router.get('/:folderId', function (req, res, next) {
  *     "name": "folder2",
  *     "emoji": "014",
  *     "color": "#fffffg",
- *     "user_id": "2"
  *     "payload": {}
  * }
  *
@@ -99,7 +95,6 @@ router.get('/:folderId', function (req, res, next) {
  * HTTP/1.1 200 OK
  * {
  *     "folder_id": 1,
- *     "user_id": "1,2",
  *     "leader": 1,
  *     "name": "folder2"
  *     "emoji": "014",
