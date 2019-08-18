@@ -13,14 +13,22 @@ const member = require('../database/members')
  * HTTP/1.1 200 OK
  *[ 
  *  {
- *     "Id": 1,
- *     "user_id": 1,
- *     "folder_id": 2,
+ *     "folder_id": 1,
+ *     "leader": 1,
+ *     "name": "folder1"
+ *     "emoji": "013",
+ *     "color": "#ffffff",
+ *     "link": "http://nyamnyam",
+ *     "reg_date": "2018-11-24 14:52:30"
  *  },
  *  {
- *     "Id": 2,
- *     "user_id": 1,
- *     "folder_id": 1,
+ *     "folder_id": 2,
+ *     "leader": 2,
+ *     "name": "folder2"
+ *     "emoji": "012",
+ *     "color": "#000000",
+ *     "link": "http://nyamnyam/2",
+ *     "reg_date": "2018-11-30 13:22:10"
  *  }
  * ]
  */
@@ -40,7 +48,7 @@ router.get('/userfolders/:userId', function (req, res, next) {
 /**
  * @api {get} /members/folderusers/:folderId Get FolderUsers
  * @apiName GetFolderUsers
- * @apiGroup Folder
+ * @apiGroup Member
  *
  * @apiParam (path) {Number} folderId folderId.
  * @apiSuccessExample {json} Success:
