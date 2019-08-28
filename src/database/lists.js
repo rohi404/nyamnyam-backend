@@ -60,10 +60,10 @@ const deleteList = async function (listId) {
   const conn = database.createConnection();
 
   const sql1 = `DELETE FROM Lists WHERE list_id = ${listId};`;
-  //const sql2 = `DELETE FROM Reviews WHERE list_id = ${listId};`;
+  const sql2 = `DELETE FROM Reviews WHERE list_id = ${listId};`;
 
   const result1 = await database.query(conn, sql1);
-  //const result2 = await database.query(conn, sql2);
+  const result2 = await database.query(conn, sql2);
 
   return result1;
 };
