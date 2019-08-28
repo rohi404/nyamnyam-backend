@@ -41,10 +41,6 @@ const modifyList = async function (listId, listName, listLocation, listMemo, lis
     queries.push(`memo=\'${listMemo}\'`);
   }
   if (listImage != undefined) {
-    //const currentFolder = getFolder(folderId);
-    //const currentUser = currentFolder["userId"];
-    //const updateUser = currentUser.concat(",", folderUser)
-
     queries.push(`image=\'${listImage}\'`);
   }
   if (wantCount != undefined) {

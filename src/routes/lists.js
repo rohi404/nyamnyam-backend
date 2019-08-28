@@ -28,6 +28,8 @@ const list = require('../database/lists')
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
  *     "image": "image1",
+ *     "want_count": 0,
+ *     "like_count": 0,
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
@@ -63,6 +65,8 @@ router.post('/:folderId', function(req, res, next) {
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
  *     "image": "image1",
+ *     "want_count": 1,
+ *     "like_count": 2,
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
@@ -91,7 +95,9 @@ router.get('/:listId', function (req, res, next) {
  *     "name": "얌얌버거",
  *     "location": "서울시 동작구 흑석동 80-1",
  *     "memo": "베이컨 꼭 추가해야함",
- *     "image": "image2"
+ *     "image": "image2",
+ *     "want_count": 1,
+ *     "like_count": 2,
  *     "payload": {}
  * }
  *
@@ -104,13 +110,15 @@ router.get('/:listId', function (req, res, next) {
  *     "location": "서울시 동작구 흑석동 80-1",
  *     "memo": "베이컨 꼭 추가해야함",
  *     "image": "image2",
+ *     "want_count": 1,
+ *     "like_count": 2,
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
 router.put('/:listId', function (req, res, next) {
   const listId = req.params["listId"];
 
-  list.modifyList(listId, req.body["name"], req.body["location"], req.body["memo"], req.body["image"])
+  list.modifyList(listId, req.body["name"], req.body["location"], req.body["memo"], req.body["image"], req.body["want_count"], req.body["like_count"])
     .then((result) => {
       res.status(200).json(result);
     })
