@@ -11,6 +11,7 @@ const folder = require('../database/folders')
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
+ *     "user_id": 1,
  *     "name": "folder1",
  *     "emoji": "013",
  *     "color": "#ffffff",
@@ -85,6 +86,7 @@ router.get('/:folderId', function (req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
+ *     "user_id": 1,
  *     "name": "folder2",
  *     "emoji": "014",
  *     "color": "#fffffg",
@@ -122,13 +124,21 @@ router.put('/:folderId', function (req, res, next) {
  * @apiGroup Folder
  *
  * @apiParam (path) {Number} folderId folderId.
+ * @apiParam {Json} body body.
+ * @apiParamExample {json} User Action:
+ * {
+ *     "user_id": 1,
+ *     "payload": {}
+ * }
+ *
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
 router.delete('/:folderId', function (req, res, next) {
   const folderId = req.params["folderId"];
+  const userId = req.body["user_id"];
 
-  folder.deleteFolder(folderId)
+  folder.deleteFolder(folderId, userId)
     .then((result) => {
       res.status(204).end();
     })

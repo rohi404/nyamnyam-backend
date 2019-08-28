@@ -31,7 +31,7 @@ const getFolder = async function (folderId) {
   return await folders.convertToFolder(folderResult[0]);
 };
 
-const modifyFolder = async function (folderId, folderName, folderEmoji, folderColor) {
+const modifyFolder = async function (folderId, folderName, folderEmoji, folderColor, folderLeader) {
   const queries = [];
 
   if (folderName != undefined) {
@@ -43,6 +43,9 @@ const modifyFolder = async function (folderId, folderName, folderEmoji, folderCo
   if (folderColor != undefined) {
     queries.push(`color=\'${folderColor}\'`);
   }
+  if (folderLeader != undefined) {
+    queries.push(`leader=\'${folderLeader}\'`);
+  }
 
   const sql = `UPDATE Folders SET ${queries.join(", ")} WHERE folder_id = ${folderId};`;
   const result = await database.queryOne(sql);
@@ -50,7 +53,7 @@ const modifyFolder = async function (folderId, folderName, folderEmoji, folderCo
   return await getFolder(folderId);
 };
 // 파일삭제시 member 삭제
-const deleteFolder = async function (folderId) {
+const deleteFolder = async function (folderId, userId) {
   const conn = database.createConnection();
 
   const sql1 = `DELETE FROM Folders WHERE folder_id = ${folderId};`;
@@ -58,6 +61,7 @@ const deleteFolder = async function (folderId) {
 
   const result1 = await database.query(conn, sql1);
   const result2 = await database.query(conn, sql2);
+  const result3 = members.deleteMember(userId, folderId);
 
   return result1;
 };
