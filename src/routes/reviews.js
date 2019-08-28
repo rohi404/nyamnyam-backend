@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const review = require('../database/reviews')
+const moment = require('moment');
+
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
 
 /**
  * @api {post} /reviews Create Review
@@ -81,7 +85,6 @@ router.get('/:reviewId', function (req, res, next) {
  * {
  *     "Id": 1,
  *     "content": "hi",
- *     "modify)time": "2018-11-24 14:52:30",
  *     "payload": {}
  * }
  *
@@ -99,7 +102,7 @@ router.get('/:reviewId', function (req, res, next) {
 router.put('/:reviewId', function (req, res, next) {
   const reviewId = req.params["reviewId"];
   const content = req.body["content"];
-  const modifyTime = req.body["modify_time"]
+  const modifyTime = moment().format('YYYY-MM-DD HH:mm:ss');
 
   review.modifyReview(reviewId, content, modifyTime)
     .then((result) => {

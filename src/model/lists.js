@@ -8,7 +8,7 @@ const convertToList = function(result) {
     image: result['image'],
     reg_date: result['reg_date'],
     want_count: parseInt(result['want_count']),
-    like_count: parseInt(result['like_count'])
+    like_count: parseInt(result['like_count']),
   }
 };
 

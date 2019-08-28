@@ -8,6 +8,7 @@ const usersRouter = require('../routes/users');
 const foldersRouter = require('../routes/folders');
 const listsRouter = require('../routes/lists');
 const membersRouter = require('../routes/members');
+const reviewRouter = require('../routes/reviews');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/users', usersRouter);
 app.use('/folders', foldersRouter);
 app.use('/lists', listsRouter);
 app.use('/members', membersRouter);
+app.use('/reviews', reviewRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));

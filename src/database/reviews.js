@@ -8,7 +8,7 @@ const createReview = async function (userId, listId, content) {
   const sql1 = `INSERT INTO Reviews (user_id, list_id, content) VALUES ('${userId}', '${listId}', '${content}');`;
   const result = await database.query(conn, sql1);
 
-  const sql2 = `SELECT LAST_INSERT_ID() AS user_id;`;
+  const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
   const result2 = await database.query(conn, sql2);
 
   database.endConnection(conn);
