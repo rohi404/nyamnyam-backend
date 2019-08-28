@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const database = require('../database/database')
 const folders = require('../model/folders')
+const members = require('../database/members')
 
 const createFolder = async function (leader, name, emoji, color) {
   const conn = database.createConnection();
@@ -13,10 +14,9 @@ const createFolder = async function (leader, name, emoji, color) {
 
   const folderId = result2[0]["folder_id"];
 
-  const sql3 = `INSERT INTO Members (user_id, folder_id) VALUES ('${leader}', '${folderId}');`;
-  const result3 = await database.query(conn, sql3);
-
+  const result3 = members.createMember(leader, folderId)
   database.endConnection(conn);
+
   return await getFolder(folderId);
 };
 
@@ -49,7 +49,7 @@ const modifyFolder = async function (folderId, folderName, folderEmoji, folderCo
 
   return await getFolder(folderId);
 };
-
+// 파일삭제시 member 삭제
 const deleteFolder = async function (folderId) {
   const conn = database.createConnection();
 
