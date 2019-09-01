@@ -20,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/', express.static("./apidoc"));
+app.use('/uploads', express.static('./uploads'));
 app.use('/users', usersRouter);
 app.use('/folders', foldersRouter);
 app.use('/lists', listsRouter);
@@ -45,8 +46,5 @@ const server = app.listen(3000, function () {
   console.log("Express server listening on port " + port.port);
 });
 
-//app.set('port', 3000);
-//const server = http.createServer(app);
-//server.listen(3000);
 
 module.exports = app;

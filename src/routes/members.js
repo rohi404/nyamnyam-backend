@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const member = require('../database/members')
+const folder = require('../database/folders');
 
 // 유저 별 폴더 정보 가져오기
 /**
@@ -34,8 +35,8 @@ const member = require('../database/members')
  */
 router.get('/userfolders/:userId', function (req, res, next) {
   const userId = req.params["userId"];
-
-  member.getUserFolders(userId)
+  console.log('roro')
+  member.getUserFolders(userId, folder)
     .then((result) => {
       res.status(200).json(result);
     })
@@ -76,8 +77,8 @@ router.get('/userfolders/:userId', function (req, res, next) {
  */
 router.get('/folderusers/:folderId', function (req, res, next) {
     const folderId = req.params["folderId"];
-
-    member.getFolderUsers(folderId)
+  console.log('roro');
+    member.getFolderUsers(folderId, folder)
         .then((result) => {
             res.status(200).json(result);
         })
