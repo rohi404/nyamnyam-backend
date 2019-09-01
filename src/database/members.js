@@ -11,7 +11,7 @@ const createMember = async function (userId, folderId) {
   const sql1 = `INSERT INTO Members (user_id, folder_id) VALUES ('${userId}', '${folderId}');`;
   const result = await database.query(conn, sql1);
 
-  const sql2 = `SELECT LAST_INSERT_ID() AS user_id;`;
+  const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
   const result2 = await database.query(conn, sql2);
 
   database.endConnection(conn);
@@ -32,27 +32,29 @@ const getMember = async function (memberId) {
 };
 
 const getUserFolders = async function (userId) {
-      const conn = database.createConnection();
-      const sql = `SELECT * FROM Members WHERE user_id = ${userId}`;
+  const conn = database.createConnection();
+  const sql = `SELECT * FROM Members WHERE user_id = ${userId}`;
+  const memberResult = await database.query(conn, sql);
 
-      const memberResult = await database.query(conn, sql);
-      if (memberResult.length == 0) {
-        throw createError(404, `There is no users with user Id is ${userId};`);
-      }
-      const result = []
-      for (let i = 0; i < memberResult.length; i++) {
-        let name = members.convertToMember(memberResult[i])["folderId"]
-        let tmp = await folder.getFolder(name)
-        result.push(tmp);
-      }
-      return await result;
+  if (memberResult.length == 0) {
+    throw createError(404, `There is no users with user Id is ${userId};`);
+  }
+
+  const result = []
+  for (let i = 0; i < memberResult.length; i++) {
+    let name = members.convertToMember(memberResult[i])["folderId"]
+    let tmp = await folder.getFolder(name)
+    result.push(tmp);
+  }
+
+  return await result;
 };
 
 const getFolderUsers = async function (folderId) {
   const conn = database.createConnection();  
   const sql = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
- 
   const memberResult = await database.query(conn, sql);
+
   if (memberResult.length == 0) {
     throw createError(404, `There is no folder with folder Id is ${folderId}`);
   }
