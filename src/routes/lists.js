@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const list = require('../database/lists')
+const list = require('../database/lists');
+const image = require('../database/image');
 
 // 리스트 추가
 /**
