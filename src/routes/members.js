@@ -35,7 +35,7 @@ const folder = require('../database/folders');
  */
 router.get('/userfolders/:userId', function (req, res, next) {
   const userId = req.params["userId"];
-  console.log('roro')
+
   member.getUserFolders(userId, folder)
     .then((result) => {
       res.status(200).json(result);
@@ -77,7 +77,7 @@ router.get('/userfolders/:userId', function (req, res, next) {
  */
 router.get('/folderusers/:folderId', function (req, res, next) {
     const folderId = req.params["folderId"];
-  console.log('roro');
+
     member.getFolderUsers(folderId, folder)
         .then((result) => {
             res.status(200).json(result);
