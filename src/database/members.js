@@ -1,9 +1,7 @@
 const createError = require('http-errors');
 const database = require('../database/database')
 const members = require('../model/members')
-const folder = require('../database/folders')
 const user = require('../database/users')
-
 
 const createMember = async function (userId, folderId) {
   const conn = database.createConnection();
@@ -31,7 +29,7 @@ const getMember = async function (memberId) {
   return await members.convertToMember(memberResult[0]);
 };
 
-const getUserFolders = async function (userId) {
+const getUserFolders = async (userId, folder) => {
       const conn = database.createConnection();
       const sql = `SELECT * FROM Members WHERE user_id = ${userId}`;
 
@@ -48,7 +46,7 @@ const getUserFolders = async function (userId) {
       return await result;
 };
 
-const getFolderUsers = async function (folderId) {
+const getFolderUsers = async function (folderId, folder) {
   const conn = database.createConnection();  
   const sql = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
  
@@ -56,14 +54,12 @@ const getFolderUsers = async function (folderId) {
   if (memberResult.length == 0) {
     throw createError(404, `There is no folder with folder Id is ${folderId}`);
   }
-
   const result = []
   for (let i=0; i<memberResult.length; i++) {
     let name = members.convertToMember(memberResult[i])["userId"];
     let tmp = await user.getUser(name);
     result.push(tmp);
   }
-
   return await result;
 };
 
