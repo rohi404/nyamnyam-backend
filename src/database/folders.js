@@ -51,8 +51,8 @@ const modifyFolder = async function (folderId, folderName, folderEmoji, folderCo
 
   return await getFolder(folderId);
 };
-// 파일삭제시 member 삭제
-const deleteFolder = async function (folderId, userId) {
+
+const deleteFolder = async function (folderId) {
   const conn = database.createConnection();
 
   const sql1 = `DELETE FROM Folders WHERE folder_id = ${folderId};`;

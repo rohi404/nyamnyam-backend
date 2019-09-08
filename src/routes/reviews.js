@@ -17,6 +17,7 @@ moment.tz.setDefault("Asia/Seoul");
  *     "user_id": 1,
  *     "list_id": 1,
  *     "content": "hello",
+ *     "image": "image1"
  *     "payload": {}
  * }
  *
@@ -35,8 +36,9 @@ router.post('/', function(req, res, next) {
   const userId = req.body["user_id"];
   const listId = req.body["list_id"];
   const content = req.body["content"];
+  const image = req.body["image"];
 
-  review.createReview(userId, listId, content)
+  review.createReview(userId, listId, content, image)
     .then((user) => {
       res.status(200).json(user);
     })
@@ -121,7 +123,6 @@ router.get('/listreviews/:listId', function (req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "Id": 1,
  *     "content": "hi",
  *     "payload": {}
  * }

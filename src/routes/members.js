@@ -11,8 +11,8 @@ const folder = require('../database/folders');
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "userId": 1,
- *     "folderId": 1,
+ *     "user_id": 1,
+ *     "folder_id": 1,
  *     "payload": {}
  * }
  *
@@ -20,13 +20,13 @@ const folder = require('../database/folders');
  * HTTP/1.1 200 OK
  * {
  *     "id" : 1
- *     "userId": 1,
- *     "folderId": 1
+ *     "user_id": 1,
+ *     "folder_id": 1
  * }
  */
 router.post('/', function (req, res, next) {
-  const userId = req.body["userId"];
-  const folderId = req.body["folderId"];
+  const userId = req.body["user_id"];
+  const folderId = req.body["folder_id"];
 
   member.createMember(userId, folderId)
     .then((result) => {

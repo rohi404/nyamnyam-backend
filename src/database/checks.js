@@ -70,8 +70,8 @@ const modifyCheck = async function (userId, listId, want, like) {
 
   const sql = `UPDATE Checks SET ${queries.join(", ")} WHERE user_id = ${userId} AND list_id = ${listId};`;
   const result = await database.queryOne(sql);
-  const result2 = lists.modifyList(listId, undefined, undefined,
-   undefined, undefined, want, like);
+  //const result2 = lists.modifyList(listId, undefined, undefined,
+   //undefined, undefined, want, like);
 
   return await getListUser(userId, listId);
 };

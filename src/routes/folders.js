@@ -124,21 +124,13 @@ router.put('/:folderId', function (req, res, next) {
  * @apiGroup Folder
  *
  * @apiParam (path) {Number} folderId folderId.
- * @apiParam {Json} body body.
- * @apiParamExample {json} User Action:
- * {
- *     "user_id": 1,
- *     "payload": {}
- * }
- *
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
 router.delete('/:folderId', function (req, res, next) {
   const folderId = req.params["folderId"];
-  const userId = req.body["user_id"];
 
-  folder.deleteFolder(folderId, userId)
+  folder.deleteFolder(folderId)
     .then((result) => {
       res.status(204).end();
     })

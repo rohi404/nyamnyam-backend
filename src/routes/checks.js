@@ -10,8 +10,8 @@ const check = require('../database/checks')
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "userId": 1,
- *     "listId": 1,
+ *     "user_id": 1,
+ *     "list_id": 1,
  *     "payload": {}
  * }
  *
@@ -19,15 +19,15 @@ const check = require('../database/checks')
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "userId": 1,
- *     "listId" 1,
+ *     "user_id": 1,
+ *     "list_id" 1,
  *     "want": 0,
  *     "like": 0
  * }
  */
 router.post('/', function(req, res, next) {
-  const userId = req.body["userId"];
-  const listId = req.body["listId"];
+  const userId = req.body["user_id"];
+  const listId = req.body["list_id"];
 
   check.createCheck(userId, listId)
     .then((user) => {
@@ -48,8 +48,8 @@ router.post('/', function(req, res, next) {
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "userId": 1,
- *     "listId" 1,
+ *     "user_id": 1,
+ *     "list_id" 1,
  *     "want": 0,
  *     "like": 0
  * }
@@ -76,15 +76,15 @@ router.get('/checkinfo/:checkId', function (req, res, next) {
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "userId": 1,
- *     "listId" 1,
+ *     "user_id": 1,
+ *     "list_id" 1,
  *     "want": 0,
  *     "like": 0
  * },
  * {
  *     "id": 2,
- *     "userId": 2,
- *     "listId" 1,
+ *     "user_id": 2,
+ *     "list_id" 1,
  *     "want": 1,
  *     "like": 0
  * },
@@ -109,23 +109,23 @@ router.get('/listusers/:listId', function (req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "userId": 1,
- *     "listId": 1,
+ *     "user_id": 1,
+ *     "list_id": 1,
  *     "payload": {}
  * }
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "userId": 1,
- *     "listId" 1,
+ *     "user_id": 1,
+ *     "list_id" 1,
  *     "want": 0,
  *     "like": 0
  * }
  */
 router.get('/listuser', function (req, res, next) {
-  const userId = req.body["userId"];
-  const listId = req.body["listId"];
+  const userId = req.body["user_id"];
+  const listId = req.body["list_id"];
 
   check.getListUser(userId, listId)
     .then((user) => {
@@ -144,8 +144,8 @@ router.get('/listuser', function (req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "userId": 1,
- *     "listId": 1
+ *     "user_id": 1,
+ *     "list_id": 1
  *     "want": 0,
  *     "like": 1,
  *     "payload": {}
@@ -155,15 +155,15 @@ router.get('/listuser', function (req, res, next) {
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "userId": 1,
- *     "listId": 1
+ *     "user_id": 1,
+ *     "list_id": 1
  *     "want": 0,
  *     "like": 1,
  * }
  */
 router.put('/', function (req, res, next) {
-  const userId = req.body["userId"];
-  const listId = req.body["listId"];
+  const userId = req.body["user_id"];
+  const listId = req.body["list_id"];
   const want = req.body["want"];
   const like = req.body["like"];
 

@@ -15,7 +15,7 @@ const user = require('../database/users')
  *     "password": "qwerty",
  *     "nickname": "hello",
  *     "image": "image1",
- *     "background": "image2"
+ *     "background": "image2",
  *     "payload": {}
  * }
  *
@@ -24,7 +24,10 @@ const user = require('../database/users')
  * {
  *     "user_id": 1,
  *     "id": "user1",
- *     "pw": "qwerty",
+ *     "password": "qwerty",
+ *     "nickname": "hello",
+ *     "image": "image1",
+ *     "background": "image2",
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */

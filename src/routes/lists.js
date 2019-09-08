@@ -14,7 +14,7 @@ const image = require('../database/images');
  * @apiParamExample {json} User Action:
  * {
  *     "name": "냠냠버거",
- *     "folderId": 2
+ *     "folder_id": 2
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
  *     "image": "image1",
@@ -24,8 +24,8 @@ const image = require('../database/images');
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
- *     "listId": 1,
- *     "folderId": 2,
+ *     "list_id": 1,
+ *     "folder_id": 2,
  *     "name": "냠냠버거",
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
@@ -36,7 +36,7 @@ const image = require('../database/images');
  * }
  */
 router.post('/', function(req, res, next) {
-  const folderId = req.body["folderId"];
+  const folderId = req.body["folder_id"];
   const listName = req.body["name"];
   const listLocation = req.body["location"];
   const listMemo = req.body["memo"];
@@ -61,8 +61,8 @@ router.post('/', function(req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
- *     "listId": 1,
- *     "folderId": 2,
+ *     "list_id": 1,
+ *     "folder_id": 2,
  *     "name": "냠냠버거",
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
@@ -94,8 +94,8 @@ router.get('/listinfo/:listId', function (req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
- *     "listId": 1,
- *     "folderId": 2,
+ *     "list_id": 1,
+ *     "folder_id": 2,
  *     "name": "냠냠버거",
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
@@ -105,8 +105,8 @@ router.get('/listinfo/:listId', function (req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * },
  * {
- *     "listId": 2,
- *     "folderId": 2,
+ *     "list_id": 2,
+ *     "folder_id": 2,
  *     "name": "얌얌피자",
  *     "location": "서울시 도봉구 창동 140-3",
  *     "memo": "수제피자 맛집",
@@ -118,7 +118,6 @@ router.get('/listinfo/:listId', function (req, res, next) {
  */
 router.get('/folderlists/:folderId', function (req, res, next) {
   const folderId = req.params["folderId"];
-  console.log(folderId);
 
   list.getFolderLists(folderId)
     .then((user) => {
@@ -151,8 +150,8 @@ router.get('/folderlists/:folderId', function (req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
- *     "listId": 1,
- *     "folderId": 2,
+ *     "list_id": 1,
+ *     "folder_id": 2,
  *     "name": "얌얌버거",
  *     "location": "서울시 동작구 흑석동 80-1",
  *     "memo": "베이컨 꼭 추가해야함",

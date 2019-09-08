@@ -2,10 +2,10 @@ const createError = require('http-errors');
 const database = require('../database/database')
 const reviews = require('../model/reviews')
 
-const createReview = async function (userId, listId, content) {
+const createReview = async function (userId, listId, content, image) {
   const conn = database.createConnection();
 
-  const sql1 = `INSERT INTO Reviews (user_id, list_id, content) VALUES ('${userId}', '${listId}', '${content}');`;
+  const sql1 = `INSERT INTO Reviews (user_id, list_id, content, image) VALUES ('${userId}', '${listId}', '${content}', '${image}');`;
   const result = await database.query(conn, sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
