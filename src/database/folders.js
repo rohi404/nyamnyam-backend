@@ -11,7 +11,6 @@ const createFolder = async function (leader, name, emoji, color) {
 
   const sql2 = `SELECT LAST_INSERT_ID() AS folder_id;`;
   const result2 = await database.query(conn, sql2);
-
   const folderId = result2[0]["folder_id"];
 
   const result3 = members.createMember(leader, folderId)

@@ -14,6 +14,7 @@ const image = require('../database/images');
  * @apiParamExample {json} User Action:
  * {
  *     "name": "냠냠버거",
+ *     "folderId": 2
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
  *     "image": "image1",
@@ -34,8 +35,8 @@ const image = require('../database/images');
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.post('/:folderId', function(req, res, next) {
-  const folderId = req.params["folderId"]
+router.post('/', function(req, res, next) {
+  const folderId = req.body["folderId"];
   const listName = req.body["name"];
   const listLocation = req.body["location"];
   const listMemo = req.body["memo"];

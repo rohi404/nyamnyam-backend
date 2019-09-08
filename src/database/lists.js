@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const database = require('../database/database');
 const lists = require('../model/lists');
 const checks = require('../database/checks');
+const members = require('../model/members');
 
 const createList = async function (folderId, name, location, memo, image) {
   const conn = database.createConnection();
@@ -11,10 +12,19 @@ const createList = async function (folderId, name, location, memo, image) {
 
   const sql2 = `SELECT LAST_INSERT_ID() AS list_id;`;
   const result2 = await database.query(conn, sql2);
+  const listId = result2[0]["list_id"];
+
+  const sql3 = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
+  const memberResult = await database.query(conn, sql3);
+
+  for(let i=0; i<memberResult.length; i++){
+    let userId = members.convertToMember(memberResult[i])["userId"];
+    console.log(userId);
+    let sql  = checks.createCheck(userId, listId);
+  }
 
   database.endConnection(conn);
 
-  const listId = result2[0]["list_id"];
   return await getList(listId);
 };
 
@@ -79,9 +89,11 @@ const deleteList = async function (listId) {
 
   const sql1 = `DELETE FROM Lists WHERE list_id = ${listId};`;
   const sql2 = `DELETE FROM Reviews WHERE list_id = ${listId};`;
+  const sql3 = `DELETE FROM Checks WHERE list_id = ${listId};`;
 
   const result1 = await database.query(conn, sql1);
   const result2 = await database.query(conn, sql2);
+  const result3 = await database.query(conn, sql3);
 
   return result1;
 };

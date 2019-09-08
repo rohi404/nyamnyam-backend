@@ -1,0 +1,179 @@
+const express = require('express');
+const router = express.Router();
+const check = require('../database/checks')
+
+/**
+ * @api {post} /checks Create Check
+ * @apiName CreateCheck
+ * @apiGroup Check
+ *
+ * @apiParam {Json} body body.
+ * @apiParamExample {json} User Action:
+ * {
+ *     "userId": 1,
+ *     "listId": 1,
+ *     "payload": {}
+ * }
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "id": 1,
+ *     "userId": 1,
+ *     "listId" 1,
+ *     "want": 0,
+ *     "like": 0
+ * }
+ */
+router.post('/', function(req, res, next) {
+  const userId = req.body["userId"];
+  const listId = req.body["listId"];
+
+  check.createCheck(userId, listId)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      next(err);
+    })
+});
+
+/**
+ * @api {get} /checks/checkinfo/:checkId Get Check
+ * @apiName GetCheck
+ * @apiGroup Check
+ *
+ * @apiParam (path) {Number} checkId checkId.
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "id": 1,
+ *     "userId": 1,
+ *     "listId" 1,
+ *     "want": 0,
+ *     "like": 0
+ * }
+ */
+router.get('/checkinfo/:checkId', function (req, res, next) {
+  const checkId = req.params["checkId"];
+
+  check.getCheck(checkId)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      next(err);
+    })
+});
+
+/**
+ * @api {get} /users/listusers/:listId Get List Users
+ * @apiName GetListUsers
+ * @apiGroup Check
+ *
+ * @apiParam (path) {Number} listId listId.
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "id": 1,
+ *     "userId": 1,
+ *     "listId" 1,
+ *     "want": 0,
+ *     "like": 0
+ * },
+ * {
+ *     "id": 2,
+ *     "userId": 2,
+ *     "listId" 1,
+ *     "want": 1,
+ *     "like": 0
+ * },
+ */
+router.get('/listusers/:listId', function (req, res, next) {
+  const listId = req.params["listId"];
+
+  check.getListUsers(listId)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      next(err);
+    })
+});
+
+/**
+ * @api {get} /checks/listuser/ Get List User
+ * @apiName GetListUser
+ * @apiGroup Check
+ *
+ * @apiParam {Json} body body.
+ * @apiParamExample {json} User Action:
+ * {
+ *     "userId": 1,
+ *     "listId": 1,
+ *     "payload": {}
+ * }
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "id": 1,
+ *     "userId": 1,
+ *     "listId" 1,
+ *     "want": 0,
+ *     "like": 0
+ * }
+ */
+router.get('/listuser', function (req, res, next) {
+  const userId = req.body["userId"];
+  const listId = req.body["listId"];
+
+  check.getListUser(userId, listId)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      next(err);
+    })
+});
+
+/**
+ * @api {put} /checks/ Modify Check
+ * @apiName ModifyCheck
+ * @apiGroup Check
+ *
+ * @apiParam {Json} body body.
+ * @apiParamExample {json} User Action:
+ * {
+ *     "userId": 1,
+ *     "listId": 1
+ *     "want": 0,
+ *     "like": 1,
+ *     "payload": {}
+ * }
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "id": 1,
+ *     "userId": 1,
+ *     "listId": 1
+ *     "want": 0,
+ *     "like": 1,
+ * }
+ */
+router.put('/', function (req, res, next) {
+  const userId = req.body["userId"];
+  const listId = req.body["listId"];
+  const want = req.body["want"];
+  const like = req.body["like"];
+
+  check.modifyCheck(userId, listId, want, like)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+module.exports = router;
