@@ -112,7 +112,7 @@ router.get('/userfolders/:userId', function (req, res, next) {
 router.get('/folderusers/:folderId', function (req, res, next) {
     const folderId = req.params["folderId"];
 
-    member.getFolderUsers(folderId, folder)
+    member.getFolderUsers(folderId)
         .then((result) => {
             res.status(200).json(result);
         })
