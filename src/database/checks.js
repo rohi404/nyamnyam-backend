@@ -1,7 +1,6 @@
 const createError = require('http-errors');
 const database = require('../database/database');
 const checks = require('../model/checks');
-const lists  = require('../database/lists');
 
 const createCheck = async function (userId, listId) {
   const conn = database.createConnection();
@@ -57,8 +56,8 @@ const getListUsers = async function (listId) {
   return await result;
 };
 
-// 0 또는 1의 값으로 줌
-const modifyCheck = async function (userId, listId, want, like) {
+// 0 또는 1의 값만 받아온다.
+const modifyCheck = async function (userId, listId, want, like, lists) {
   const queries = [];
 
   if (want != undefined) {
@@ -70,8 +69,8 @@ const modifyCheck = async function (userId, listId, want, like) {
 
   const sql = `UPDATE Checks SET ${queries.join(", ")} WHERE user_id = ${userId} AND list_id = ${listId};`;
   const result = await database.queryOne(sql);
-  //const result2 = lists.modifyList(listId, undefined, undefined,
-   //undefined, undefined, want, like);
+  const result2 = await lists.modifyList(listId, undefined, undefined,
+   undefined, undefined, want, like);
 
   return await getListUser(userId, listId);
 };

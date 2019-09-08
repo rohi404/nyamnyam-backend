@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const check = require('../database/checks')
+const list = require('../database/lists')
 
 /**
  * @api {post} /checks Create Check
@@ -167,7 +168,7 @@ router.put('/', function (req, res, next) {
   const want = req.body["want"];
   const like = req.body["like"];
 
-  check.modifyCheck(userId, listId, want, like)
+  check.modifyCheck(userId, listId, want, like, list)
     .then((result) => {
       res.status(200).json(result);
     })

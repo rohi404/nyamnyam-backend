@@ -57,7 +57,10 @@ const getFolderLists = async function (folderId) {
 };
 
 const modifyList = async function (listId, listName, listLocation, listMemo, listImage, wantCount, likeCount) {
+  const res = await getList(listId);
   const queries = [];
+  const want_count = res['want_count'];
+  const like_count = res['like_count'];
 
   if (listName != undefined) {
     queries.push(`name=\'${listName}\'`);
@@ -71,11 +74,22 @@ const modifyList = async function (listId, listName, listLocation, listMemo, lis
   if (listImage != undefined) {
     queries.push(`image=\'${listImage}\'`);
   }
+  // wantCount, likeCount 입력이 1이면 카운트수 증가 0이면 카운트수 감소
   if (wantCount != undefined) {
-    queries.push(`want_count=\'${wantCount}\'`);
+    if(wantCount === 1){
+      queries.push(`want_count=\'${want_count+1}\'`);
+    }
+    if(wantCount === 0){
+      queries.push(`want_count=\'${want_count-1}\'`);
+    }
   }
   if (likeCount != undefined) {
-    queries.push(`like_count=\'${likeCount}\'`);
+    if(likeCount === 1){
+      queries.push(`like_count=\'${like_count+1}\'`);
+    }
+    if(likeCount === 0) {
+      queries.push(`like_count=\'${like_count-1}\'`);
+    }
   }
 
   const sql = `UPDATE Lists SET ${queries.join(", ")} WHERE list_id = ${listId};`;
