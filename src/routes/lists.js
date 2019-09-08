@@ -52,7 +52,7 @@ router.post('/:folderId', function(req, res, next) {
 
 // 리스트 정보 가져오기
 /**
- * @api {get} /lists/:listId Get List
+ * @api {get} /lists/listinfo/:listId Get List
  * @apiName GetList
  * @apiGroup List
  *
@@ -71,10 +71,55 @@ router.post('/:folderId', function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.get('/:listId', function (req, res, next) {
+router.get('/listinfo/:listId', function (req, res, next) {
   const listId = req.params["listId"];
 
   list.getList(listId)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      next(err);
+    })
+});
+
+// 리스트 정보 가져오기
+/**
+ * @api {get} /lists/folderlists/:listId Get Folder Lists
+ * @apiName GetFolderLists
+ * @apiGroup List
+ *
+ * @apiParam (path) {Number} folderId folderId.
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "listId": 1,
+ *     "folderId": 2,
+ *     "name": "냠냠버거",
+ *     "location": "서울시 동작구 흑석동 150-4",
+ *     "memo": "수제버거 맛집",
+ *     "image": "image1",
+ *     "want_count": 1,
+ *     "like_count": 2,
+ *     "reg_date": "2018-11-24 14:52:30"
+ * },
+ * {
+ *     "listId": 2,
+ *     "folderId": 2,
+ *     "name": "얌얌피자",
+ *     "location": "서울시 도봉구 창동 140-3",
+ *     "memo": "수제피자 맛집",
+ *     "image": "image2",
+ *     "want_count": 2,
+ *     "like_count": 0,
+ *     "reg_date": "2018-11-26 23:32:10"
+ * }
+ */
+router.get('/folderlists/:folderId', function (req, res, next) {
+  const folderId = req.params["folderId"];
+  console.log(folderId);
+
+  list.getFolderLists(folderId)
     .then((user) => {
       res.status(200).json(user);
     })

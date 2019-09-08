@@ -1,6 +1,7 @@
 const createError = require('http-errors');
-const database = require('../database/database')
-const lists = require('../model/lists')
+const database = require('../database/database');
+const lists = require('../model/lists');
+const checks = require('../database/checks');
 
 const createList = async function (folderId, name, location, memo, image) {
   const conn = database.createConnection();
@@ -26,6 +27,23 @@ const getList = async function (listId) {
   }
 
   return await lists.convertToList(listResult[0]);
+};
+
+const getFolderLists = async function (folderId) {
+  const conn = database.createConnection();
+  const sql = `SELECT * FROM Lists WHERE folder_id = ${folderId}`;
+  const listResult = await database.query(conn, sql);
+
+  if (listResult.length == 0) {
+    throw createError(404, `There is no list with folder Id is ${folderId}`);
+  }
+
+  const result = []
+  for (let i = 0; i < listResult.length; i++) {
+    result.push(lists.convertToList(listResult[i]));
+  }
+
+  return await result;
 };
 
 const modifyList = async function (listId, listName, listLocation, listMemo, listImage, wantCount, likeCount) {
@@ -68,4 +86,4 @@ const deleteList = async function (listId) {
   return result1;
 };
 
-module.exports = { createList, getList, modifyList, deleteList };
+module.exports = { createList, getList, getFolderLists, modifyList, deleteList };
