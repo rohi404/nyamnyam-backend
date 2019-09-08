@@ -22,10 +22,27 @@ const getReview = async function (reviewId) {
   const reviewResult = await database.queryOne(sql);
 
   if (reviewResult.length == 0) {
-    throw createError(404, `There is no users with review Id is ${reviewId};`);
+    throw createError(404, `There is no reviews with review Id is ${reviewId};`);
   }
 
   return await reviews.convertToReview(reviewResult[0]);
+};
+
+const getListReviews = async function (listId) {
+  const conn = database.createConnection();
+  const sql = `SELECT * FROM Reviews WHERE list_id = ${listId};`;
+  const reviewResult = await database.query(conn, sql);
+
+  if (reviewResult.length == 0) {
+    throw createError(404, `There is no reviews with list Id is ${listId};`);
+  }
+
+  const result = []
+  for (let i = 0; i < reviewResult.length; i++) {
+    result.push(reviews.convertToReview(reviewResult[i]));
+  }
+
+  return await result;
 };
 
 const modifyReview = async function (reviewId, content, modifyTime) {
@@ -50,4 +67,4 @@ const deleteReview = async function (reviewId) {
   return result1;
 };
 
-module.exports = { createReview, getReview, modifyReview, deleteReview };
+module.exports = { createReview, getReview, getListReviews, modifyReview, deleteReview };
