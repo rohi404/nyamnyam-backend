@@ -85,7 +85,7 @@ router.get('/listinfo/:listId', function (req, res, next) {
 
 // 리스트 정보 가져오기
 /**
- * @api {get} /lists/folderlists/:listId Get Folder Lists
+ * @api {get} /lists/folderlists/:folderId Get Folder Lists
  * @apiName GetFolderLists
  * @apiGroup List
  *

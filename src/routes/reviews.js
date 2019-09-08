@@ -75,7 +75,7 @@ router.get('/reviewinfo/:reviewId', function (req, res, next) {
 });
 
 /**
- * @api {get} /reviews/listreviews/:reviewId Get List Review
+ * @api {get} /reviews/listreviews/:listId Get List Review
  * @apiName GetListReviews
  * @apiGroup Review
  *
