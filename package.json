@@ -8,13 +8,30 @@
   },
   "dependencies": {
     "apidoc": "^0.17.7",
+    "aws-sdk": "^2.521.0",
+    "cookie-parser": "^1.4.4",
+    "csurf": "^1.10.0",
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.26",
     "morgan": "~1.9.0",
+    "multer-s3": "^2.9.0",
     "mysql": "^2.17.1",
     "pug": "^2.0.4"
-  }
+  },
+  "description": "🍰Food Bucket List",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aereeeee/nyamnyam-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aereeeee/nyamnyam-backend/issues"
+  },
+  "homepage": "https://github.com/aereeeee/nyamnyam-backend#readme"
 }
