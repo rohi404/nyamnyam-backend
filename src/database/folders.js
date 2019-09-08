@@ -58,10 +58,11 @@ const deleteFolder = async function (folderId, userId) {
 
   const sql1 = `DELETE FROM Folders WHERE folder_id = ${folderId};`;
   const sql2 = `DELETE FROM Lists WHERE folder_id = ${folderId};`;
+  const sql3 = `DELETE FROM Members WHERE folder_id = ${folderId};`;
 
   const result1 = await database.query(conn, sql1);
   const result2 = await database.query(conn, sql2);
-  const result3 = members.deleteMember(userId, folderId);
+  const result3 = await database.query(conn, sql3);;
 
   return result1;
 };
