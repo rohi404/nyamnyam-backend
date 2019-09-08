@@ -28,6 +28,17 @@ const getUser = async function (userId) {
   return await users.convertToUser(userResult[0]);
 };
 
+const getUserKey = async function (Id) {
+  const sql = `SELECT * FROM Users WHERE id = '${Id}'`;
+  const userResult = await database.queryOne(sql);
+
+  if (userResult.length == 0) {
+    throw createError(404, `There is no users with user Id is ${Id}`);
+  }
+
+  return await users.convertToUser(userResult[0]);
+};
+
 const modifyUser = async function (userId, userNickname, userProfile, userBackground) {
   const queries = [];
 
@@ -57,4 +68,4 @@ const deleteUser = async function (userId) {
   return result1;
 };
 
-module.exports = { createUser, getUser, modifyUser, deleteUser };
+module.exports = { createUser, getUser, getUserKey, modifyUser, deleteUser };

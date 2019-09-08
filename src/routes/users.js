@@ -46,7 +46,7 @@ router.post('/', function(req, res, next) {
 
 // 유저 정보 가져오기
 /**
- * @api {get} /users/:userId Get User
+ * @api {get} /users/userinfo/:userId Get User
  * @apiName GetUser
  * @apiGroup User
  *
@@ -63,10 +63,45 @@ router.post('/', function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.get('/:userId', function (req, res, next) {
+router.get('/userinfo/:userId', function (req, res, next) {
   const userId = req.params["userId"];
 
   user.getUser(userId)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      next(err);
+    })
+});
+
+// 유저 정보 가져오기
+/**
+ * @api {get} /users/userkey Get UserKey
+ * @apiName GetUserKey
+ * @apiGroup User
+ *
+ * * @apiParamExample {json} User Action:
+ * {
+ *     "id": "user1",
+ *     "payload": {}
+ * }
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "user_id": 1,
+ *     "id": "user1",
+ *     "password": "qwerty",
+ *     "nickname": "hello",
+ *     "image": "image1",
+ *     "background": "image2"
+ *     "reg_date": "2018-11-24 14:52:30"
+ * }
+ */
+router.get('/userkey', function (req, res, next) {
+  const Id = req.body["id"];
+
+  user.getUserKey(Id)
     .then((user) => {
       res.status(200).json(user);
     })
