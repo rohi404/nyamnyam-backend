@@ -25,10 +25,9 @@ const upload = require("../utills/multer-s3");
 router.post("/:listId", upload.array("file"), (req, res) => {
   const listId = req.params["listId"];
   const urls = req.files.map(file => file.location);
-  console.log(urls);
-  //   res.send(urls);
+
   image
-    .createImage(listId, urls[0])
+    .createImage(listId, urls)
     .then(image => {
       res.status(200).json(image);
     })
@@ -57,13 +56,13 @@ router.post("/:listId", upload.array("file"), (req, res) => {
  *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
  * }
  */
-router.get("/folderlists/:folderId", function(req, res, next) {
-  const folderId = req.params["folderId"];
+router.get("/:listId", function(req, res, next) {
+  const listId = req.params["listId"];
 
-  list
-    .getFolderLists(folderId)
-    .then(user => {
-      res.status(200).json(user);
+  image
+    .getListImage(listId)
+    .then(image => {
+      res.status(200).json(image);
     })
     .catch(err => {
       next(err);
