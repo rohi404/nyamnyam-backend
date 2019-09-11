@@ -25,9 +25,10 @@ const upload = require("../utills/multer-s3");
 router.post("/:listId", upload.array("file"), (req, res) => {
   const listId = req.params["listId"];
   const urls = req.files.map(file => file.location);
-
+  console.log(urls);
+  //   res.send(urls);
   image
-    .createImage(listId, urls)
+    .createImage(listId, urls[0])
     .then(image => {
       res.status(200).json(image);
     })
@@ -36,4 +37,36 @@ router.post("/:listId", upload.array("file"), (req, res) => {
     });
 });
 
+// 리스트의 이미지 정보 가져오기
+/**
+ * @api {get} /images/:listId Get Images in list
+ * @apiName GetListImages
+ * @apiGroup Images
+ *
+ * @apiParam (path) {Number} ListID
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "imageId": 2,
+ *     "listId": 1,
+ *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
+ * },
+ * {
+ *     "imageId": 3,
+ *     "listId": 1,
+ *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
+ * }
+ */
+router.get("/folderlists/:folderId", function(req, res, next) {
+  const folderId = req.params["folderId"];
+
+  list
+    .getFolderLists(folderId)
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
 module.exports = router;
