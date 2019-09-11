@@ -5,8 +5,10 @@ const images = require('../model/images')
 const createImage = async function (listId, url) {
   const conn = database.createConnection();
 
-  const sql1 = `INSERT INTO Images (list_id, url) VALUES ('${listId}', '${url}');`;
-  const result = await database.query(conn, sql1);
+  for(let i = 0; i < url.length; i++){
+    let sql1 = `INSERT INTO Images (list_id, url) VALUES ('${listId}', '${url[i]}');`;
+    let result = await database.query(conn, sql1);
+  }
 
   const sql2 = `SELECT LAST_INSERT_ID() AS image_id;`;
   const result2 = await database.query(conn, sql2);
