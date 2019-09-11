@@ -1,6 +1,7 @@
 credentials.js
 apidoc
 doc
+.DS_Store
 
 ### Node ###
 # Logs

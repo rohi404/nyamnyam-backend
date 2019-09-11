@@ -3,8 +3,7 @@ const router = express.Router();
 const image = require("../database/images");
 const upload = require("../utills/multer-s3");
 
-//  이미지 추가
-//form name "file" 이여야 함
+// 특정 리스트에 이미지 추가
 /**
  * @api {post} /images/:listId Upload Image
  * @apiName UploadImage
@@ -14,7 +13,7 @@ const upload = require("../utills/multer-s3");
  * @apiParam {Binary} body body.
  * @apiParamExample {Binary} file contents
  *
- * @apiSuccessExample {json} Success:
+ * @apiSuccessExample {json} Success 마지막 이미지만 응답:
  * HTTP/1.1 200 OK
  * {
  *     "imageId": 4,
@@ -22,7 +21,7 @@ const upload = require("../utills/multer-s3");
  *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
  * }
  */
-router.post("/:listId", upload.array("file"), (req, res) => {
+router.post("/:listId", upload.array("file"), (req, res, next) => {
   const listId = req.params["listId"];
   const urls = req.files.map(file => file.location);
 
@@ -68,4 +67,5 @@ router.get("/:listId", function(req, res, next) {
       next(err);
     });
 });
+
 module.exports = router;

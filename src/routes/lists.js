@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const list = require("../database/lists");
+const image = require("../database/images");
+const upload = require("../utills/multer-s3");
 
-// 리스트 추가
+// 리스트 추가 * 이미지 form name "file" 이여야 함
 /**
  * @api {post} /lists/:folderId Create List
  * @apiName CreateList
@@ -35,17 +37,26 @@ const list = require("../database/lists");
  * }
  */
 
-router.post("/", function(req, res, next) {
+router.post("/", upload.array("file"), function(req, res, next) {
+  const urls = req.files.map(file => file.location);
+
   const folderId = req.body["folder_id"];
   const listName = req.body["name"];
   const listLocation = req.body["location"];
   const listMemo = req.body["memo"];
-  const listImage = req.body["image"];
+  const listImage = urls[0];
 
   list
     .createList(folderId, listName, listLocation, listMemo, listImage)
-    .then(user => {
-      res.status(200).json(user);
+    .then(list => {
+      image
+        .createImage(list.listId, urls)
+        .then(() => {
+          res.status(200).json(list);
+        })
+        .catch(err => {
+          next(err);
+        });
     })
     .catch(err => {
       next(err);
@@ -164,8 +175,14 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.put("/:listId", function(req, res, next) {
+router.put("/:listId", upload.array("file"), function(req, res, next) {
   const listId = req.params["listId"];
+  const urls = req.files.map(file => file.location);
+
+  if (req.file) {
+    //요청중에 파일이 존재 할시 이전이미지 지운다.
+    fs.unlinkSync(uploadDir + "/" + product.thumbnail);
+  }
 
   list
     .modifyList(
