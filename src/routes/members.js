@@ -3,6 +3,40 @@ const router = express.Router();
 const member = require('../database/members')
 const folder = require('../database/folders');
 
+/**
+ * @api {post} /members Create Member
+ * @apiName CreateMember
+ * @apiGroup Member
+ *
+ * @apiParam {Json} body body.
+ * @apiParamExample {json} User Action:
+ * {
+ *     "user_id": 1,
+ *     "folder_id": 1,
+ *     "payload": {}
+ * }
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "id" : 1
+ *     "user_id": 1,
+ *     "folder_id": 1
+ * }
+ */
+router.post('/', function (req, res, next) {
+  const userId = req.body["user_id"];
+  const folderId = req.body["folder_id"];
+
+  member.createMember(userId, folderId)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      next(err);
+    })
+});
+
 // 유저 별 폴더 정보 가져오기
 /**
  * @api {get} /members/userfolders/:userId Get UserFolders
@@ -56,7 +90,7 @@ router.get('/userfolders/:userId', function (req, res, next) {
  * HTTP/1.1 200 OK
  *[ 
  *  {
- *     "user_id": 1,
+ *     "userId": 1,
  *     "id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
@@ -65,7 +99,7 @@ router.get('/userfolders/:userId', function (req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  *  },
  *  {
- *     "user_id": 2,
+ *     "userId": 2,
  *     "id": "user2",
  *     "password": "qwerty",
  *     "nickname": "hello2",
@@ -78,7 +112,7 @@ router.get('/userfolders/:userId', function (req, res, next) {
 router.get('/folderusers/:folderId', function (req, res, next) {
     const folderId = req.params["folderId"];
 
-    member.getFolderUsers(folderId, folder)
+    member.getFolderUsers(folderId)
         .then((result) => {
             res.status(200).json(result);
         })

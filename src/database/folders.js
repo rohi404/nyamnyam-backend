@@ -11,7 +11,6 @@ const createFolder = async function (leader, name, emoji, color) {
 
   const sql2 = `SELECT LAST_INSERT_ID() AS folder_id;`;
   const result2 = await database.query(conn, sql2);
-
   const folderId = result2[0]["folder_id"];
 
   const result3 = members.createMember(leader, folderId)
@@ -52,16 +51,17 @@ const modifyFolder = async function (folderId, folderName, folderEmoji, folderCo
 
   return await getFolder(folderId);
 };
-// 파일삭제시 member 삭제
-const deleteFolder = async function (folderId, userId) {
+
+const deleteFolder = async function (folderId) {
   const conn = database.createConnection();
 
   const sql1 = `DELETE FROM Folders WHERE folder_id = ${folderId};`;
   const sql2 = `DELETE FROM Lists WHERE folder_id = ${folderId};`;
+  const sql3 = `DELETE FROM Members WHERE folder_id = ${folderId};`;
 
   const result1 = await database.query(conn, sql1);
   const result2 = await database.query(conn, sql2);
-  const result3 = members.deleteMember(userId, folderId);
+  const result3 = await database.query(conn, sql3);;
 
   return result1;
 };

@@ -17,6 +17,7 @@ moment.tz.setDefault("Asia/Seoul");
  *     "user_id": 1,
  *     "list_id": 1,
  *     "content": "hello",
+ *     "image": "image1"
  *     "payload": {}
  * }
  *
@@ -35,8 +36,9 @@ router.post('/', function(req, res, next) {
   const userId = req.body["user_id"];
   const listId = req.body["list_id"];
   const content = req.body["content"];
+  const image = req.body["image"];
 
-  review.createReview(userId, listId, content)
+  review.createReview(userId, listId, content, image)
     .then((user) => {
       res.status(200).json(user);
     })
@@ -46,7 +48,7 @@ router.post('/', function(req, res, next) {
 });
 
 /**
- * @api {get} /reviews/:reviewId Get Review
+ * @api {get} /reviews/reviewinfo/:reviewId Get Review
  * @apiName GetReview
  * @apiGroup Review
  *
@@ -62,10 +64,48 @@ router.post('/', function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.get('/:reviewId', function (req, res, next) {
+router.get('/reviewinfo/:reviewId', function (req, res, next) {
   const reviewId = req.params["reviewId"];
 
   review.getReview(reviewId)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      next(err);
+    })
+});
+
+/**
+ * @api {get} /reviews/listreviews/:listId Get List Review
+ * @apiName GetListReviews
+ * @apiGroup Review
+ *
+ * @apiParam (path) {Number} listId listId.
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "Id": 1
+ *     "user_id": 1,
+ *     "list_id": 1,
+ *     "content": "hello",
+ *     "image": "image1"
+ *     "reg_date": "2018-11-24 14:52:30"
+ * }
+ * {
+ *     "Id": 2
+ *     "user_id": 2,
+ *     "list_id": 1,
+ *     "content": "good burger",
+ *     "image": "image2"
+ *     "reg_date": "2018-11-27 13:53:10"
+ * }
+ */
+router.get('/listreviews/:listId', function (req, res, next) {
+  const listId = req.params["listId"];
+  console.log(listId);
+
+  review.getListReviews(listId)
     .then((user) => {
       res.status(200).json(user);
     })
@@ -83,7 +123,6 @@ router.get('/:reviewId', function (req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "Id": 1,
  *     "content": "hi",
  *     "payload": {}
  * }

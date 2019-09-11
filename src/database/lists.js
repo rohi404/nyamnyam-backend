@@ -1,6 +1,8 @@
 const createError = require('http-errors');
-const database = require('../database/database')
-const lists = require('../model/lists')
+const database = require('../database/database');
+const lists = require('../model/lists');
+const checks = require('../database/checks');
+const members = require('../model/members');
 
 const createList = async function (folderId, name, location, memo, image) {
   const conn = database.createConnection();
@@ -10,10 +12,19 @@ const createList = async function (folderId, name, location, memo, image) {
 
   const sql2 = `SELECT LAST_INSERT_ID() AS list_id;`;
   const result2 = await database.query(conn, sql2);
+  const listId = result2[0]["list_id"];
+
+  const sql3 = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
+  const memberResult = await database.query(conn, sql3);
+
+  for(let i=0; i<memberResult.length; i++){
+    let userId = members.convertToMember(memberResult[i])["userId"];
+    console.log(userId);
+    let sql  = checks.createCheck(userId, listId);
+  }
 
   database.endConnection(conn);
 
-  const listId = result2[0]["list_id"];
   return await getList(listId);
 };
 
@@ -28,8 +39,28 @@ const getList = async function (listId) {
   return await lists.convertToList(listResult[0]);
 };
 
+const getFolderLists = async function (folderId) {
+  const conn = database.createConnection();
+  const sql = `SELECT * FROM Lists WHERE folder_id = ${folderId}`;
+  const listResult = await database.query(conn, sql);
+
+  if (listResult.length == 0) {
+    throw createError(404, `There is no list with folder Id is ${folderId}`);
+  }
+
+  const result = []
+  for (let i = 0; i < listResult.length; i++) {
+    result.push(lists.convertToList(listResult[i]));
+  }
+
+  return await result;
+};
+
 const modifyList = async function (listId, listName, listLocation, listMemo, listImage, wantCount, likeCount) {
+  const res = await getList(listId);
   const queries = [];
+  const want_count = res['want_count'];
+  const like_count = res['like_count'];
 
   if (listName != undefined) {
     queries.push(`name=\'${listName}\'`);
@@ -43,11 +74,22 @@ const modifyList = async function (listId, listName, listLocation, listMemo, lis
   if (listImage != undefined) {
     queries.push(`image=\'${listImage}\'`);
   }
+  // wantCount, likeCount 입력이 1이면 카운트수 증가 0이면 카운트수 감소
   if (wantCount != undefined) {
-    queries.push(`want_count=\'${wantCount}\'`);
+    if(wantCount === 1){
+      queries.push(`want_count=\'${want_count+1}\'`);
+    }
+    if(wantCount === 0){
+      queries.push(`want_count=\'${want_count-1}\'`);
+    }
   }
   if (likeCount != undefined) {
-    queries.push(`like_count=\'${likeCount}\'`);
+    if(likeCount === 1){
+      queries.push(`like_count=\'${like_count+1}\'`);
+    }
+    if(likeCount === 0) {
+      queries.push(`like_count=\'${like_count-1}\'`);
+    }
   }
 
   const sql = `UPDATE Lists SET ${queries.join(", ")} WHERE list_id = ${listId};`;
@@ -61,11 +103,13 @@ const deleteList = async function (listId) {
 
   const sql1 = `DELETE FROM Lists WHERE list_id = ${listId};`;
   const sql2 = `DELETE FROM Reviews WHERE list_id = ${listId};`;
+  const sql3 = `DELETE FROM Checks WHERE list_id = ${listId};`;
 
   const result1 = await database.query(conn, sql1);
   const result2 = await database.query(conn, sql2);
+  const result3 = await database.query(conn, sql3);
 
   return result1;
 };
 
-module.exports = { createList, getList, modifyList, deleteList };
+module.exports = { createList, getList, getFolderLists, modifyList, deleteList };

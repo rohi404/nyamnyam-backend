@@ -46,7 +46,7 @@ const getUserFolders = async (userId, folder) => {
       return await result;
 };
 
-const getFolderUsers = async function (folderId, folder) {
+const getFolderUsers = async function (folderId) {
   const conn = database.createConnection();  
   const sql = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
   const memberResult = await database.query(conn, sql);
