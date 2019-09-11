@@ -1,7 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const list = require('../database/lists');
-const image = require('../database/images');
+const list = require("../database/lists");
 
 // 리스트 추가
 /**
@@ -35,20 +34,22 @@ const image = require('../database/images');
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.post('/', function(req, res, next) {
+
+router.post("/", function(req, res, next) {
   const folderId = req.body["folder_id"];
   const listName = req.body["name"];
   const listLocation = req.body["location"];
   const listMemo = req.body["memo"];
   const listImage = req.body["image"];
 
-  list.createList(folderId, listName, listLocation, listMemo, listImage)
-    .then((user) => {
+  list
+    .createList(folderId, listName, listLocation, listMemo, listImage)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 // 리스트 정보 가져오기
@@ -72,16 +73,17 @@ router.post('/', function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.get('/listinfo/:listId', function (req, res, next) {
+router.get("/listinfo/:listId", function(req, res, next) {
   const listId = req.params["listId"];
 
-  list.getList(listId)
-    .then((user) => {
+  list
+    .getList(listId)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 // 리스트 정보 가져오기
@@ -116,16 +118,17 @@ router.get('/listinfo/:listId', function (req, res, next) {
  *     "reg_date": "2018-11-26 23:32:10"
  * }
  */
-router.get('/folderlists/:folderId', function (req, res, next) {
+router.get("/folderlists/:folderId", function(req, res, next) {
   const folderId = req.params["folderId"];
 
-  list.getFolderLists(folderId)
-    .then((user) => {
+  list
+    .getFolderLists(folderId)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 // 리스트 정보 수정(이름, 위치, 메모, 사진)
@@ -161,14 +164,23 @@ router.get('/folderlists/:folderId', function (req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.put('/:listId', function (req, res, next) {
+router.put("/:listId", function(req, res, next) {
   const listId = req.params["listId"];
 
-  list.modifyList(listId, req.body["name"], req.body["location"], req.body["memo"], req.body["image"], req.body["want_count"], req.body["like_count"])
-    .then((result) => {
+  list
+    .modifyList(
+      listId,
+      req.body["name"],
+      req.body["location"],
+      req.body["memo"],
+      req.body["image"],
+      req.body["want_count"],
+      req.body["like_count"]
+    )
+    .then(result => {
       res.status(200).json(result);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
     });
 });
@@ -183,14 +195,15 @@ router.put('/:listId', function (req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
-router.delete('/:listId', function (req, res, next) {
+router.delete("/:listId", function(req, res, next) {
   const listId = req.params["listId"];
 
-  list.deleteList(listId)
-    .then((result) => {
+  list
+    .deleteList(listId)
+    .then(result => {
       res.status(204).end();
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
     });
 });

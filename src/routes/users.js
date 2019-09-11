@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const user = require('../database/users')
+const user = require("../database/users");
 
 // 회원가입 - 유저 등록
 /**
@@ -31,20 +31,21 @@ const user = require('../database/users')
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.post('/', function(req, res, next) {
+router.post("/", function(req, res, next) {
   const userId = req.body["id"];
   const userPassword = req.body["password"];
   const userNickname = req.body["nickname"];
   const userProfile = req.body["image"];
-  const userBackground = req.body["background"]
+  const userBackground = req.body["background"];
 
-  user.createUser(userId, userPassword, userNickname, userProfile, userBackground)
-    .then((user) => {
+  user
+    .createUser(userId, userPassword, userNickname, userProfile, userBackground)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 // 유저 정보 가져오기
@@ -66,16 +67,17 @@ router.post('/', function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.get('/userinfo/:userId', function (req, res, next) {
+router.get("/userinfo/:userId", function(req, res, next) {
   const userId = req.params["userId"];
 
-  user.getUser(userId)
-    .then((user) => {
+  user
+    .getUser(userId)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 // 유저 정보 가져오기
@@ -101,16 +103,17 @@ router.get('/userinfo/:userId', function (req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.get('/userkey', function (req, res, next) {
+router.get("/userkey", function(req, res, next) {
   const Id = req.body["id"];
 
-  user.getUserKey(Id)
-    .then((user) => {
+  user
+    .getUserKey(Id)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 // 유저 정보 수정(닉네임, 프로필사진, 배경사진만 가능)
@@ -141,14 +144,20 @@ router.get('/userkey', function (req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.put('/:userId', function (req, res, next) {
+router.put("/:userId", function(req, res, next) {
   const userId = req.params["userId"];
 
-  user.modifyUser(userId, req.body["nickname"], req.body["image"], req.body["background"])
-    .then((result) => {
+  user
+    .modifyUser(
+      userId,
+      req.body["nickname"],
+      req.body["image"],
+      req.body["background"]
+    )
+    .then(result => {
       res.status(200).json(result);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
     });
 });
@@ -163,14 +172,15 @@ router.put('/:userId', function (req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
-router.delete('/:userId', function (req, res, next) {
+router.delete("/:userId", function(req, res, next) {
   const userId = req.params["userId"];
 
-  user.deleteUser(userId)
-    .then((result) => {
+  user
+    .deleteUser(userId)
+    .then(result => {
       res.status(204).end();
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
     });
 });
