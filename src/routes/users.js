@@ -1,6 +1,33 @@
 const express = require("express");
 const router = express.Router();
 const user = require("../database/users");
+const authMail = require("../utills/auth-email");
+
+// 이메일 회원가입 - 인증
+/**
+ * @api {post} /users/auth Auth User
+ * @apiName AuthUser
+ * @apiGroup User
+ *
+ * @apiParam {Json} body body.
+ * @apiParamExample {json} User Action:
+ * {
+ *     "email": "user1@gmail.com",
+ * }
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *   "email": "user1@gmail.com",
+ *   "auth_code": 12345,
+ * }
+ */
+router.post("/auth", authMail, function(req, res, next) {
+  const userEmail = req.body["email"];
+  const authCode = req.code;
+
+  res.status(200).json({ email: userEmail, code: authCode });
+});
 
 // 회원가입 - 유저 등록
 /**
@@ -14,6 +41,7 @@ const user = require("../database/users");
  *     "id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
+ *     "email": "user1@gmail.com",
  *     "image": "image1",
  *     "background": "image2",
  *     "payload": {}
@@ -26,6 +54,7 @@ const user = require("../database/users");
  *     "id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
+ *     "email": "user1@gmail.com",
  *     "image": "image1",
  *     "background": "image2",
  *     "reg_date": "2018-11-24 14:52:30"
@@ -35,11 +64,19 @@ router.post("/", function(req, res, next) {
   const userId = req.body["id"];
   const userPassword = req.body["password"];
   const userNickname = req.body["nickname"];
+  const userEmail = req.body["email"];
   const userProfile = req.body["image"];
   const userBackground = req.body["background"];
 
   user
-    .createUser(userId, userPassword, userNickname, userProfile, userBackground)
+    .createUser(
+      userId,
+      userPassword,
+      userNickname,
+      userEmail,
+      userProfile,
+      userBackground
+    )
     .then(user => {
       res.status(200).json(user);
     })

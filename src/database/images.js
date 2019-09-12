@@ -1,11 +1,11 @@
-const createError = require('http-errors');
-const database = require('../database/database')
-const images = require('../model/images')
+const createError = require("http-errors");
+const database = require("../database/database");
+const images = require("../model/images");
 
-const createImage = async function (listId, url) {
+const createImage = async function(listId, url) {
   const conn = database.createConnection();
 
-  for(let i = 0; i < url.length; i++){
+  for (let i = 0; i < url.length; i++) {
     let sql1 = `INSERT INTO Images (list_id, url) VALUES ('${listId}', '${url[i]}');`;
     let result = await database.query(conn, sql1);
   }
@@ -19,7 +19,7 @@ const createImage = async function (listId, url) {
   return await getImage(imageId);
 };
 
-const getImage = async function (imageId) {
+const getImage = async function(imageId) {
   const sql = `SELECT * FROM Images WHERE image_id = ${imageId};`;
   const imageResult = await database.queryOne(sql);
 
@@ -30,7 +30,7 @@ const getImage = async function (imageId) {
   return await images.convertToImage(imageResult[0]);
 };
 
-const getListImage = async function (listId) {
+const getListImage = async function(listId) {
   const conn = database.createConnection();
   const sql = `SELECT * FROM Images WHERE list_id = ${listId};`;
   const imageResult = await database.query(conn, sql);
@@ -39,29 +39,31 @@ const getListImage = async function (listId) {
     throw createError(404, `There is no images with list Id is ${listId};`);
   }
 
-  const result = []
+  const result = [];
   for (let i = 0; i < imageResult.length; i++) {
-    let tmp = images.convertToImage(imageResult[i])['url'];
+    let tmp = images.convertToImage(imageResult[i])["url"];
     result.push(tmp);
   }
 
   return result;
 };
 
-const modifyImage = async function (imageId, url) {
+const modifyImage = async function(imageId, url) {
   const queries = [];
 
   if (url != undefined) {
     queries.push(`name=\'${url}\'`);
   }
 
-  const sql = `UPDATE Images SET ${queries.join(", ")} WHERE image_id = ${imageId};`;
+  const sql = `UPDATE Images SET ${queries.join(
+    ", "
+  )} WHERE image_id = ${imageId};`;
   const result = await database.queryOne(sql);
 
   return await getImage(imageId);
 };
 
-const deleteImage = async function (imageId) {
+const deleteImage = async function(imageId) {
   const conn = database.createConnection();
 
   const sql1 = `DELETE FROM Images WHERE image_id = ${imageId};`;
@@ -71,4 +73,10 @@ const deleteImage = async function (imageId) {
   return result1;
 };
 
-module.exports = { createImage, getImage, getListImage, modifyImage, deleteImage };
+module.exports = {
+  createImage,
+  getImage,
+  getListImage,
+  modifyImage,
+  deleteImage
+};

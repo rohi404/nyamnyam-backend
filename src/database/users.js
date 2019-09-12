@@ -1,11 +1,18 @@
-const createError = require('http-errors');
-const database = require('../database/database')
-const users = require('../model/users')
+const createError = require("http-errors");
+const database = require("../database/database");
+const users = require("../model/users");
 
-const createUser = async function (id, password, nickname, image, background) {
+const createUser = async function(
+  id,
+  password,
+  nickname,
+  email,
+  image,
+  background
+) {
   const conn = database.createConnection();
 
-  const sql1 = `INSERT INTO Users (id, password, nickname, image, background) VALUES ('${id}', '${password}', '${nickname}', '${image}', '${background}');`;
+  const sql1 = `INSERT INTO Users (id, password, nickname, email, image, background ) VALUES ('${id}', '${password}', '${nickname}', '${email}', '${image}', '${background}' );`;
   const result = await database.query(conn, sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS user_id;`;
@@ -17,7 +24,7 @@ const createUser = async function (id, password, nickname, image, background) {
   return await getUser(userId);
 };
 
-const getUser = async function (userId) {
+const getUser = async function(userId) {
   const sql = `SELECT * FROM Users WHERE user_id = ${userId}`;
   const userResult = await database.queryOne(sql);
 
@@ -28,7 +35,7 @@ const getUser = async function (userId) {
   return await users.convertToUser(userResult[0]);
 };
 
-const getUserKey = async function (Id) {
+const getUserKey = async function(Id) {
   const sql = `SELECT * FROM Users WHERE id = '${Id}'`;
   const userResult = await database.queryOne(sql);
 
@@ -39,7 +46,12 @@ const getUserKey = async function (Id) {
   return await users.convertToUser(userResult[0]);
 };
 
-const modifyUser = async function (userId, userNickname, userProfile, userBackground) {
+const modifyUser = async function(
+  userId,
+  userNickname,
+  userProfile,
+  userBackground
+) {
   const queries = [];
 
   if (userNickname != undefined) {
@@ -52,13 +64,15 @@ const modifyUser = async function (userId, userNickname, userProfile, userBackgr
     queries.push(`background=\'${userBackground}\'`);
   }
 
-  const sql = `UPDATE Users SET ${queries.join(", ")} WHERE user_id = ${userId};`;
+  const sql = `UPDATE Users SET ${queries.join(
+    ", "
+  )} WHERE user_id = ${userId};`;
   const result = await database.queryOne(sql);
 
   return await getUser(userId);
 };
 
-const deleteUser = async function (userId) {
+const deleteUser = async function(userId) {
   const conn = database.createConnection();
 
   const sql1 = `DELETE FROM Users WHERE user_id = ${userId};`;
