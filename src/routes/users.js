@@ -19,7 +19,7 @@ const authMail = require("../utills/auth-email");
  * HTTP/1.1 200 OK
  * {
  *   "email": "user1@gmail.com",
- *   "auth_code": 12345,
+ *   "auth_code": 123456,
  * }
  */
 router.post("/auth", authMail, function(req, res, next) {

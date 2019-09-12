@@ -11,7 +11,6 @@ const upload = require("../utills/multer-s3");
  *
  * @apiParam (path) {Number} listId
  * @apiParam {Binary} body body.
- * @apiParamExample {Binary} file contents
  *
  * @apiSuccessExample {json} Success 마지막 이미지만 응답:
  * HTTP/1.1 200 OK
@@ -35,9 +34,9 @@ router.post("/:listId", upload.array("file"), (req, res, next) => {
     });
 });
 
-// 리스트의 이미지 정보 가져오기
+// 리스트의 이미지들 가져오기
 /**
- * @api {get} /images/:listId Get Images in list
+ * @api {get} /images/list/:listId Get Images in list
  * @apiName GetListImages
  * @apiGroup Images
  *
@@ -55,7 +54,7 @@ router.post("/:listId", upload.array("file"), (req, res, next) => {
  *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
  * }
  */
-router.get("/:listId", function(req, res, next) {
+router.get("/list/:listId", function(req, res, next) {
   const listId = req.params["listId"];
 
   image
@@ -68,15 +67,42 @@ router.get("/:listId", function(req, res, next) {
     });
 });
 
+// 특정 이미지 가져오기
+/**
+ * @api {get} /images/:ImageId Get the Image
+ * @apiName GetImage
+ * @apiGroup Images
+ *
+ * @apiParam (path) {Number} ImageID
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "imageId": 3,
+ *     "listId": 1,
+ *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
+ * }
+ */
+router.get("/:ImageId", function(req, res, next) {
+  const ImageId = req.params["ImageId"];
+
+  image
+    .getImage(ImageId)
+    .then(image => {
+      res.status(200).json(image);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 // 이미지 수정
 /**
  * @api {put} /imagess/:ImageId Modify Image
  * @apiName ModifyImages
- * @apiGroup Image
+ * @apiGroup Images
  *
  * @apiParam (path) {Number} ImageId
  * @apiParam {Binary} body body.
- * @apiParamExample {Binary} file contents
  *
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
