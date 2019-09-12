@@ -5,13 +5,17 @@ const upload = require("../utills/multer-s3");
 
 // 특정 리스트에 이미지 추가
 /**
- * @api {post} /images/:listId Upload Image
+ * @api {post} /images Upload Image
  * @apiName UploadImage
  * @apiGroup Images
  *
  * @apiParam (path) {Number} listId
  * @apiParam {Binary} body body.
- *
+ * @apiParamExample {json} User Action:
+ * {
+ *     "listId": 1,
+ *     "file": "aaaaa",
+ * }
  * @apiSuccessExample {json} Success 마지막 이미지만 응답:
  * HTTP/1.1 200 OK
  * {
@@ -20,8 +24,8 @@ const upload = require("../utills/multer-s3");
  *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
  * }
  */
-router.post("/:listId", upload.array("file"), (req, res, next) => {
-  const listId = req.params["listId"];
+router.post("/", upload.array("file"), (req, res, next) => {
+  const listId = req.body["listId"];
   const urls = req.files.map(file => file.location);
 
   image

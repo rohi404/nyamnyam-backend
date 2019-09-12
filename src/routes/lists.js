@@ -38,25 +38,30 @@ const upload = require("../utills/multer-s3");
  */
 
 router.post("/", upload.array("file"), function(req, res, next) {
-  const urls = req.files.map(file => file.location);
+  const files = req.files.length > 0;
+  const urls = files ? req.files.map(file => file.location) : null;
 
   const folderId = req.body["folder_id"];
   const listName = req.body["name"];
   const listLocation = req.body["location"];
   const listMemo = req.body["memo"];
-  const listImage = urls[0];
+  const listImage = !urls ? "default-image" : urls[0];
 
   list
     .createList(folderId, listName, listLocation, listMemo, listImage)
     .then(list => {
-      image
-        .createImage(list.listId, urls)
-        .then(() => {
-          res.status(200).json(list);
-        })
-        .catch(err => {
-          next(err);
-        });
+      if (files) {
+        image
+          .createImage(list.listId, urls)
+          .then(() => {
+            res.status(200).json(list);
+          })
+          .catch(err => {
+            next(err);
+          });
+      } else {
+        res.status(200).json(list);
+      }
     })
     .catch(err => {
       next(err);
@@ -176,7 +181,11 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  * }
  */
 router.put("/:listId", upload.array("file"), function(req, res, next) {
+  //TODO: 기존 이미지 모두 삭제하고 다시 업로드?
+  const files = req.files.length > 0;
+  const urls = files ? req.files.map(file => file.location) : null;
   const listId = req.params["listId"];
+  const listImage = !urls ? "default-image" : urls[0];
 
   list
     .modifyList(
@@ -184,12 +193,23 @@ router.put("/:listId", upload.array("file"), function(req, res, next) {
       req.body["name"],
       req.body["location"],
       req.body["memo"],
-      req.body["image"],
+      listImage,
       req.body["want_count"],
       req.body["like_count"]
     )
-    .then(result => {
-      res.status(200).json(result);
+    .then(list => {
+      if (files) {
+        image
+          .createImage(listId, urls)
+          .then(() => {
+            res.status(200).json(list);
+          })
+          .catch(err => {
+            next(err);
+          });
+      } else {
+        res.status(200).json(list);
+      }
     })
     .catch(err => {
       next(err);
