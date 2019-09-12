@@ -177,12 +177,6 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  */
 router.put("/:listId", upload.array("file"), function(req, res, next) {
   const listId = req.params["listId"];
-  const urls = req.files.map(file => file.location);
-
-  if (req.file) {
-    //요청중에 파일이 존재 할시 이전이미지 지운다.
-    fs.unlinkSync(uploadDir + "/" + product.thumbnail);
-  }
 
   list
     .modifyList(

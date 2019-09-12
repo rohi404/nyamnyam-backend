@@ -68,4 +68,59 @@ router.get("/:listId", function(req, res, next) {
     });
 });
 
+// 이미지 수정
+/**
+ * @api {put} /imagess/:ImageId Modify Image
+ * @apiName ModifyImages
+ * @apiGroup Image
+ *
+ * @apiParam (path) {Number} ImageId
+ * @apiParam {Binary} body body.
+ * @apiParamExample {Binary} file contents
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "imageId": 4,
+ *     "listId": 1,
+ *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
+ * }
+ */
+router.put("/:ImageId", upload.array("file"), function(req, res, next) {
+  const ImageId = req.params["ImageId"];
+  const urls = req.files.map(file => file.location);
+
+  image
+    .modifyImage(ImageId, urls)
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+// 이미지 삭제
+/**
+ * @api {delete} /images/:imageId Delete Image
+ * @apiName DeleteImage
+ * @apiGroup Images
+ *
+ * @apiParam (path) {Number} ImageId
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 204 No Content
+ */
+router.delete("/:ImageId", function(req, res, next) {
+  const ImageId = req.params["ImageId"];
+
+  image
+    .deleteImage(ImageId)
+    .then(() => {
+      res.status(204).end();
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 module.exports = router;
