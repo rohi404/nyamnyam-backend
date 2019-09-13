@@ -27,10 +27,7 @@ const upload = multer({
     bucket: process.env.AWS_BUCKET,
 
     key: function(req, file, cb) {
-      cb(
-        null,
-        req.params.listId + "/" + uuidv1() + "." + file.mimetype.split("/")[1]
-      );
+      cb(null, "images/" + uuidv1() + "." + file.mimetype.split("/")[1]);
     },
     acl: "public-read"
   })

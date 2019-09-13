@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const list = require("../database/lists");
+const image = require("../database/images");
+const upload = require("../utills/multer-s3");
 
-// 리스트 추가
+// 리스트 추가 * 이미지 form name "file" 이여야 함
 /**
  * @api {post} /lists/:folderId Create List
  * @apiName CreateList
@@ -35,17 +37,31 @@ const list = require("../database/lists");
  * }
  */
 
-router.post("/", function(req, res, next) {
+router.post("/", upload.array("file"), function(req, res, next) {
+  const files = req.files.length > 0;
+  const urls = files ? req.files.map(file => file.location) : null;
+
   const folderId = req.body["folder_id"];
   const listName = req.body["name"];
   const listLocation = req.body["location"];
   const listMemo = req.body["memo"];
-  const listImage = req.body["image"];
+  const listImage = !urls ? "default-image" : urls[0];
 
   list
     .createList(folderId, listName, listLocation, listMemo, listImage)
-    .then(user => {
-      res.status(200).json(user);
+    .then(list => {
+      if (files) {
+        image
+          .createImage(list.listId, urls)
+          .then(() => {
+            res.status(200).json(list);
+          })
+          .catch(err => {
+            next(err);
+          });
+      } else {
+        res.status(200).json(list);
+      }
     })
     .catch(err => {
       next(err);
@@ -164,8 +180,12 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.put("/:listId", function(req, res, next) {
+router.put("/:listId", upload.array("file"), function(req, res, next) {
+  //TODO: 기존 이미지 모두 삭제하고 다시 업로드?
+  const files = req.files.length > 0;
+  const urls = files ? req.files.map(file => file.location) : null;
   const listId = req.params["listId"];
+  const listImage = !urls ? "default-image" : urls[0];
 
   list
     .modifyList(
@@ -173,12 +193,23 @@ router.put("/:listId", function(req, res, next) {
       req.body["name"],
       req.body["location"],
       req.body["memo"],
-      req.body["image"],
+      listImage,
       req.body["want_count"],
       req.body["like_count"]
     )
-    .then(result => {
-      res.status(200).json(result);
+    .then(list => {
+      if (files) {
+        image
+          .createImage(listId, urls)
+          .then(() => {
+            res.status(200).json(list);
+          })
+          .catch(err => {
+            next(err);
+          });
+      } else {
+        res.status(200).json(list);
+      }
     })
     .catch(err => {
       next(err);
