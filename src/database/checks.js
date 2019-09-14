@@ -1,11 +1,11 @@
-const createError = require('http-errors');
-const database = require('../database/database');
-const checks = require('../model/checks');
+const createError = require("http-errors");
+const database = require("../database/database");
+const checks = require("../model/checks");
 
-const createCheck = async function (userId, listId) {
+const createCheck = async function(userKey, listId) {
   const conn = database.createConnection();
 
-  const sql1 = `INSERT INTO Checks (user_id, list_id) VALUES ('${userId}', '${listId}');`;
+  const sql1 = `INSERT INTO Checks (user_key, list_id) VALUES ('${userKey}', '${listId}');`;
   const result = await database.query(conn, sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
@@ -17,7 +17,7 @@ const createCheck = async function (userId, listId) {
   return await getCheck(checkId);
 };
 
-const getCheck = async function (checkId) {
+const getCheck = async function(checkId) {
   const sql = `SELECT * FROM Checks WHERE id = ${checkId}`;
   const checkResult = await database.queryOne(sql);
 
@@ -28,18 +28,21 @@ const getCheck = async function (checkId) {
   return await checks.convertToCheck(checkResult[0]);
 };
 
-const getListUser = async function (userId, listId) {
-  const sql = `SELECT * FROM Checks WHERE list_id = ${listId} AND user_id = ${userId}`;
+const getListUser = async function(userKey, listId) {
+  const sql = `SELECT * FROM Checks WHERE list_id = ${listId} AND user_key = ${userKey}`;
   const checkResult = await database.queryOne(sql);
 
   if (checkResult.length == 0) {
-    throw createError(404, `There is no users with list Id is ${listId} and user Id is ${userId}`);
+    throw createError(
+      404,
+      `There is no users with list Id is ${listId} and user Key is ${userKey}`
+    );
   }
 
   return await await checks.convertToCheck(checkResult[0]);
 };
 
-const getListUsers = async function (listId) {
+const getListUsers = async function(listId) {
   const conn = database.createConnection();
   const sql = `SELECT * FROM Checks WHERE list_id = ${listId}`;
   const checkResult = await database.query(conn, sql);
@@ -48,7 +51,7 @@ const getListUsers = async function (listId) {
     throw createError(404, `There is no users with list Id is ${listId}`);
   }
 
-  const result = []
+  const result = [];
   for (let i = 0; i < checkResult.length; i++) {
     result.push(checks.convertToCheck(checkResult[i]));
   }
@@ -57,7 +60,7 @@ const getListUsers = async function (listId) {
 };
 
 // 0 또는 1의 값만 받아온다.
-const modifyCheck = async function (userId, listId, want, like, lists) {
+const modifyCheck = async function(userKey, listId, want, like, lists) {
   const queries = [];
 
   if (want != undefined) {
@@ -67,22 +70,38 @@ const modifyCheck = async function (userId, listId, want, like, lists) {
     queries.push(`like_check=\'${like}\'`);
   }
 
-  const sql = `UPDATE Checks SET ${queries.join(", ")} WHERE user_id = ${userId} AND list_id = ${listId};`;
+  const sql = `UPDATE Checks SET ${queries.join(
+    ", "
+  )} WHERE user_key = ${userKey} AND list_id = ${listId};`;
   const result = await database.queryOne(sql);
-  const result2 = await lists.modifyList(listId, undefined, undefined,
-   undefined, undefined, want, like);
+  const result2 = await lists.modifyList(
+    listId,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    want,
+    like
+  );
 
   return await getListUser(userId, listId);
 };
 
-const deleteCheck = async function (userId, listId) {
+const deleteCheck = async function(userKey, listId) {
   const conn = database.createConnection();
 
-  const sql1 = `DELETE FROM Checks WHERE user_id = ${userId} AND list_id = ${listId};`;
+  const sql1 = `DELETE FROM Checks WHERE user_key = ${userKey} AND list_id = ${listId};`;
 
   const result1 = await database.query(conn, sql1);
 
   return result1;
 };
 
-module.exports = { createCheck, getCheck, getListUser, getListUsers, modifyCheck, deleteCheck };
+module.exports = {
+  createCheck,
+  getCheck,
+  getListUser,
+  getListUsers,
+  modifyCheck,
+  deleteCheck
+};

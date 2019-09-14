@@ -1,7 +1,7 @@
 const convertToUser = function(result) {
   return {
-    userId: parseInt(result["user_id"]),
-    id: result["id"],
+    userKey: parseInt(result["user_key"]),
+    userId: result["user_id"],
     password: result["password"],
     nickname: result["nickname"],
     email: result["email"],

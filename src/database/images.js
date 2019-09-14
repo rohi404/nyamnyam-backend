@@ -24,7 +24,7 @@ const getImage = async function(imageId) {
   const imageResult = await database.queryOne(sql);
 
   if (imageResult.length == 0) {
-    throw createError(404, `There is no users with user Id is ${imageId};`);
+    throw createError(404, `There is no images with image Id is ${imageId};`);
   }
 
   return await images.convertToImage(imageResult[0]);

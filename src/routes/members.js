@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const member = require('../database/members')
-const folder = require('../database/folders');
+const member = require("../database/members");
+const folder = require("../database/folders");
 
 /**
  * @api {post} /members Create Member
@@ -11,7 +11,7 @@ const folder = require('../database/folders');
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "folder_id": 1,
  *     "payload": {}
  * }
@@ -20,33 +20,34 @@ const folder = require('../database/folders');
  * HTTP/1.1 200 OK
  * {
  *     "id" : 1
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "folder_id": 1
  * }
  */
-router.post('/', function (req, res, next) {
-  const userId = req.body["user_id"];
+router.post("/", function(req, res, next) {
+  const userKey = req.body["user_key"];
   const folderId = req.body["folder_id"];
 
-  member.createMember(userId, folderId)
-    .then((result) => {
+  member
+    .createMember(userKey, folderId)
+    .then(result => {
       res.status(200).json(result);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 // 유저 별 폴더 정보 가져오기
 /**
- * @api {get} /members/userfolders/:userId Get UserFolders
+ * @api {get} /members/userfolders/:userKey Get UserFolders
  * @apiName GetUserFolders
  * @apiGroup Member
  *
- * @apiParam (path) {Number} userId userId.
+ * @apiParam (path) {Number} userKey userKey.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
- *[ 
+ *[
  *  {
  *     "folder_id": 1,
  *     "leader": 1,
@@ -67,16 +68,17 @@ router.post('/', function (req, res, next) {
  *  }
  * ]
  */
-router.get('/userfolders/:userId', function (req, res, next) {
-  const userId = req.params["userId"];
+router.get("/userfolders/:userKey", function(req, res, next) {
+  const userKey = req.params["userKey"];
 
-  member.getUserFolders(userId, folder)
-    .then((result) => {
+  member
+    .getUserFolders(userKey, folder)
+    .then(result => {
       res.status(200).json(result);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 // 폴더 별 유저 정보 가져오기
@@ -88,9 +90,9 @@ router.get('/userfolders/:userId', function (req, res, next) {
  * @apiParam (path) {Number} folderId folderId.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
- *[ 
+ *[
  *  {
- *     "userId": 1,
+ *     "userKey": 1,
  *     "id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
@@ -99,7 +101,7 @@ router.get('/userfolders/:userId', function (req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  *  },
  *  {
- *     "userId": 2,
+ *     "userKey": 2,
  *     "id": "user2",
  *     "password": "qwerty",
  *     "nickname": "hello2",
@@ -109,16 +111,17 @@ router.get('/userfolders/:userId', function (req, res, next) {
  *  }
  * ]
  */
-router.get('/folderusers/:folderId', function (req, res, next) {
-    const folderId = req.params["folderId"];
+router.get("/folderusers/:folderId", function(req, res, next) {
+  const folderId = req.params["folderId"];
 
-    member.getFolderUsers(folderId)
-        .then((result) => {
-            res.status(200).json(result);
-        })
-        .catch((err) => {
-            next(err);
-        })
+  member
+    .getFolderUsers(folderId)
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      next(err);
+    });
 });
 
 module.exports = router;

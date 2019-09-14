@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const check = require('../database/checks')
-const list = require('../database/lists')
+const check = require("../database/checks");
+const list = require("../database/lists");
 
 /**
  * @api {post} /checks Create Check
@@ -11,7 +11,7 @@ const list = require('../database/lists')
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "list_id": 1,
  *     "payload": {}
  * }
@@ -20,23 +20,24 @@ const list = require('../database/lists')
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "list_id" 1,
  *     "want": 0,
  *     "like": 0
  * }
  */
-router.post('/', function(req, res, next) {
-  const userId = req.body["user_id"];
+router.post("/", function(req, res, next) {
+  const userKey = req.body["user_key"];
   const listId = req.body["list_id"];
 
-  check.createCheck(userId, listId)
-    .then((user) => {
+  check
+    .createCheck(userKey, listId)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 /**
@@ -49,22 +50,23 @@ router.post('/', function(req, res, next) {
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "list_id" 1,
  *     "want": 0,
  *     "like": 0
  * }
  */
-router.get('/checkinfo/:checkId', function (req, res, next) {
+router.get("/checkinfo/:checkId", function(req, res, next) {
   const checkId = req.params["checkId"];
 
-  check.getCheck(checkId)
-    .then((user) => {
+  check
+    .getCheck(checkId)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 /**
@@ -77,29 +79,30 @@ router.get('/checkinfo/:checkId', function (req, res, next) {
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "list_id" 1,
  *     "want": 0,
  *     "like": 0
  * },
  * {
  *     "id": 2,
- *     "user_id": 2,
+ *     "user_key": 2,
  *     "list_id" 1,
  *     "want": 1,
  *     "like": 0
  * },
  */
-router.get('/listusers/:listId', function (req, res, next) {
+router.get("/listusers/:listId", function(req, res, next) {
   const listId = req.params["listId"];
 
-  check.getListUsers(listId)
-    .then((user) => {
+  check
+    .getListUsers(listId)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 /**
@@ -110,7 +113,7 @@ router.get('/listusers/:listId', function (req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "list_id": 1,
  *     "payload": {}
  * }
@@ -118,23 +121,24 @@ router.get('/listusers/:listId', function (req, res, next) {
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "list_id" 1,
  *     "want": 0,
  *     "like": 0
  * }
  */
-router.get('/listuser', function (req, res, next) {
-  const userId = req.body["user_id"];
+router.get("/listuser", function(req, res, next) {
+  const userKey = req.body["user_key"];
   const listId = req.body["list_id"];
 
-  check.getListUser(userId, listId)
-    .then((user) => {
+  check
+    .getListUser(userKey, listId)
+    .then(user => {
       res.status(200).json(user);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
-    })
+    });
 });
 
 /**
@@ -145,7 +149,7 @@ router.get('/listuser', function (req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "list_id": 1
  *     "want": 0,
  *     "like": 1,
@@ -156,23 +160,24 @@ router.get('/listuser', function (req, res, next) {
  * HTTP/1.1 200 OK
  * {
  *     "id": 1,
- *     "user_id": 1,
+ *     "user_key": 1,
  *     "list_id": 1
  *     "want": 0,
  *     "like": 1,
  * }
  */
-router.put('/', function (req, res, next) {
-  const userId = req.body["user_id"];
+router.put("/", function(req, res, next) {
+  const userKey = req.body["user_key"];
   const listId = req.body["list_id"];
   const want = req.body["want"];
   const like = req.body["like"];
 
-  check.modifyCheck(userId, listId, want, like, list)
-    .then((result) => {
+  check
+    .modifyCheck(userKey, listId, want, like, list)
+    .then(result => {
       res.status(200).json(result);
     })
-    .catch((err) => {
+    .catch(err => {
       next(err);
     });
 });

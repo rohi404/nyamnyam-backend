@@ -18,9 +18,8 @@ const createList = async function(folderId, name, location, memo, image) {
   const memberResult = await database.query(conn, sql3);
 
   for (let i = 0; i < memberResult.length; i++) {
-    let userId = members.convertToMember(memberResult[i])["userId"];
-    console.log(userId);
-    let sql = checks.createCheck(userId, listId);
+    let userKey = members.convertToMember(memberResult[i])["userKey"];
+    let sql = checks.createCheck(userKey, listId);
   }
 
   database.endConnection(conn);
