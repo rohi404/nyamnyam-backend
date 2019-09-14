@@ -119,8 +119,8 @@ router.get("/userinfo/:userKey", function(req, res, next) {
 
 // 유저 정보 가져오기
 /**
- * @api {get} /users/userid Get UserId
- * @apiName GetUserId
+ * @api {get} /users/userid Get UserKey
+ * @apiName GetUserKey
  * @apiGroup User
  *
  * * @apiParamExample {json} User Action:

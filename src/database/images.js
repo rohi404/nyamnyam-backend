@@ -41,7 +41,7 @@ const getListImage = async function(listId) {
 
   const result = [];
   for (let i = 0; i < imageResult.length; i++) {
-    let tmp = images.convertToImage(imageResult[i])["url"];
+    let tmp = images.convertToImage(imageResult[i]);
     result.push(tmp);
   }
 

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const list = require("../database/lists");
 const image = require("../database/images");
-const upload = require("../utills/multer-s3");
+const { upload, deleteS3 } = require("../utills/multer-s3");
 
 // 리스트 추가 * 이미지 form name "file" 이여야 함
 /**
@@ -19,6 +19,7 @@ const upload = require("../utills/multer-s3");
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
  *     "image": "image1",
+ *     "file" : "file.png"
  *     "payload": {}
  * }
  *
@@ -198,18 +199,7 @@ router.put("/:listId", upload.array("file"), function(req, res, next) {
       req.body["like_count"]
     )
     .then(list => {
-      if (files) {
-        image
-          .createImage(listId, urls)
-          .then(() => {
-            res.status(200).json(list);
-          })
-          .catch(err => {
-            next(err);
-          });
-      } else {
-        res.status(200).json(list);
-      }
+      res.status(200).json(list);
     })
     .catch(err => {
       next(err);
@@ -226,12 +216,23 @@ router.put("/:listId", upload.array("file"), function(req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
-router.delete("/:listId", function(req, res, next) {
+router.delete("/:listId", async function(req, res, next) {
   const listId = req.params["listId"];
+  const images = await image.getListImage(listId);
 
   list
     .deleteList(listId)
-    .then(result => {
+    .then(() => {
+      images.forEach(result => {
+        image
+          .deleteImage(result.imageId)
+          .then(() => {
+            deleteS3(result.url);
+          })
+          .catch(err => {
+            next(err);
+          });
+      });
       res.status(204).end();
     })
     .catch(err => {

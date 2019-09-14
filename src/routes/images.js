@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const image = require("../database/images");
-const upload = require("../utills/multer-s3");
+const { upload, deleteS3 } = require("../utills/multer-s3");
 
 // 특정 리스트에 이미지 추가
 /**
@@ -91,8 +91,8 @@ router.get("/:ImageId", function(req, res, next) {
 
   image
     .getImage(ImageId)
-    .then(image => {
-      res.status(200).json(image);
+    .then(result => {
+      res.status(200).json(result);
     })
     .catch(err => {
       next(err);
@@ -145,7 +145,8 @@ router.delete("/:ImageId", function(req, res, next) {
 
   image
     .deleteImage(ImageId)
-    .then(() => {
+    .then(result => {
+      deleteS3(result.url);
       res.status(204).end();
     })
     .catch(err => {

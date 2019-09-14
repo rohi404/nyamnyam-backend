@@ -33,4 +33,14 @@ const upload = multer({
   })
 });
 
-module.exports = upload;
+const deleteS3 = url => {
+  return s3.deleteObject(
+    {
+      Bucket: process.env.AWS_BUCKET,
+      Key: `images/${url.split("images/")[1]}`
+    },
+    function(err, data) {}
+  );
+};
+
+module.exports = { upload, deleteS3 };
