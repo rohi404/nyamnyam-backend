@@ -140,8 +140,8 @@ router.get("/userinfo/:userId", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.get("/userkey", function(req, res, next) {
-  const Id = req.body["id"];
+router.get("/userkey/:id", function(req, res, next) {
+  const Id = req.params["id"];
 
   user
     .getUserKey(Id)

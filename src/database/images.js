@@ -6,7 +6,7 @@ const createImage = async function(listId, url) {
   const conn = database.createConnection();
 
   for (let i = 0; i < url.length; i++) {
-    let sql1 = `INSERT INTO Images (list_id, url) VALUES ('${listId}', '${url[i]}');`;
+    let sql1 = `INSERT INTO Images (list_id, url, image_order) VALUES ('${listId}', '${url[i]}','${i}');`;
     let result = await database.query(conn, sql1);
   }
 
