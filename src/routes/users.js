@@ -8,6 +8,12 @@ const authMail = require("../utills/auth-email");
  * @api {post} /users/auth Auth User
  * @apiName AuthUser
  * @apiGroup User
+ * @apiDescription 하루 500통 limit 있음
+ *
+ * 잘못된 메일주소일 때 에러 응답 없음
+ *
+ * 메일이 안올 경우 주소 다시 확인하라는 알림 있어야 할 듯
+ *
  *
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
@@ -119,15 +125,11 @@ router.get("/userinfo/:userKey", function(req, res, next) {
 
 // 유저 정보 가져오기
 /**
- * @api {get} /users/userid Get UserKey
+ * @api {get} /users/userid/:userId Get UserKey
  * @apiName GetUserKey
  * @apiGroup User
  *
- * * @apiParamExample {json} User Action:
- * {
- *     "user_id": "user1",
- *     "payload": {}
- * }
+ * @apiParam (path) {Number} userId userId.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
