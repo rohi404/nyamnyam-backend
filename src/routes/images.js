@@ -121,7 +121,7 @@ router.put("/:ImageId", upload.array("file"), function(req, res, next) {
   const urls = req.files.map(file => file.location);
 
   image
-    .modifyImage(ImageId, urls)
+    .modifyImage(ImageId, urls[0])
     .then(result => {
       res.status(200).json(result);
     })
@@ -140,13 +140,16 @@ router.put("/:ImageId", upload.array("file"), function(req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
-router.delete("/:ImageId", function(req, res, next) {
+router.delete("/:ImageId", async function(req, res, next) {
   const ImageId = req.params["ImageId"];
+
+  await image.getImage(ImageId).then(result => {
+    deleteS3(result.url);
+  });
 
   image
     .deleteImage(ImageId)
     .then(result => {
-      deleteS3(result.url);
       res.status(204).end();
     })
     .catch(err => {
