@@ -3,7 +3,7 @@ const database = require("../database/database");
 const users = require("../model/users");
 
 const createUser = async function(
-  id,
+  userId,
   password,
   nickname,
   email,
@@ -12,42 +12,42 @@ const createUser = async function(
 ) {
   const conn = database.createConnection();
 
-  const sql1 = `INSERT INTO Users (id, password, nickname, email, image, background ) VALUES ('${id}', '${password}', '${nickname}', '${email}', '${image}', '${background}' );`;
+  const sql1 = `INSERT INTO Users (user_id, password, nickname, email, image, background ) VALUES ('${userId}', '${password}', '${nickname}', '${email}', '${image}', '${background}' );`;
   const result = await database.query(conn, sql1);
 
-  const sql2 = `SELECT LAST_INSERT_ID() AS user_id;`;
+  const sql2 = `SELECT LAST_INSERT_ID() AS user_key;`;
   const result2 = await database.query(conn, sql2);
 
   database.endConnection(conn);
 
-  const userId = result2[0]["user_id"];
-  return await getUser(userId);
+  const userKey = result2[0]["user_key"];
+  return await getUser(userKey);
 };
 
-const getUser = async function(userId) {
-  const sql = `SELECT * FROM Users WHERE user_id = ${userId}`;
+const getUser = async function(userKey) {
+  const sql = `SELECT * FROM Users WHERE user_key = ${userKey}`;
   const userResult = await database.queryOne(sql);
 
   if (userResult.length == 0) {
-    throw createError(404, `There is no users with user Id is ${userId}`);
+    throw createError(404, `There is no users with user key is ${userKey}`);
   }
 
   return await users.convertToUser(userResult[0]);
 };
 
-const getUserKey = async function(Id) {
-  const sql = `SELECT * FROM Users WHERE id = '${Id}'`;
+const getUserId = async function(Id) {
+  const sql = `SELECT * FROM Users WHERE user_id = '${Id}'`;
   const userResult = await database.queryOne(sql);
 
   if (userResult.length == 0) {
-    throw createError(404, `There is no users with user Id is ${Id}`);
+    throw createError(404, `There is no users with user id is ${Id}`);
   }
 
   return await users.convertToUser(userResult[0]);
 };
 
 const modifyUser = async function(
-  userId,
+  userKey,
   userNickname,
   userProfile,
   userBackground
@@ -66,20 +66,20 @@ const modifyUser = async function(
 
   const sql = `UPDATE Users SET ${queries.join(
     ", "
-  )} WHERE user_id = ${userId};`;
+  )} WHERE user_key = ${userKey};`;
   const result = await database.queryOne(sql);
 
-  return await getUser(userId);
+  return await getUser(userKey);
 };
 
-const deleteUser = async function(userId) {
+const deleteUser = async function(userKey) {
   const conn = database.createConnection();
 
-  const sql1 = `DELETE FROM Users WHERE user_id = ${userId};`;
+  const sql1 = `DELETE FROM Users WHERE user_key = ${userKey};`;
 
   const result1 = await database.query(conn, sql1);
 
   return result1;
 };
 
-module.exports = { createUser, getUser, getUserKey, modifyUser, deleteUser };
+module.exports = { createUser, getUser, getUserId, modifyUser, deleteUser };

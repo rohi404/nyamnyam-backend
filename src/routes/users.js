@@ -8,6 +8,12 @@ const authMail = require("../utills/auth-email");
  * @api {post} /users/auth Auth User
  * @apiName AuthUser
  * @apiGroup User
+ * @apiDescription 하루 500통 limit 있음
+ *
+ * 잘못된 메일주소일 때 에러 응답 없음
+ *
+ * 메일이 안올 경우 주소 다시 확인하라는 알림 있어야 할 듯
+ *
  *
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
@@ -38,7 +44,7 @@ router.post("/auth", authMail, function(req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "id": "user1",
+ *     "user_id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
  *     "email": "user1@gmail.com",
@@ -50,8 +56,8 @@ router.post("/auth", authMail, function(req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
- *     "user_id": 1,
- *     "id": "user1",
+ *     "user_key": 1,
+ *     "user_id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
  *     "email": "user1@gmail.com",
@@ -61,7 +67,7 @@ router.post("/auth", authMail, function(req, res, next) {
  * }
  */
 router.post("/", function(req, res, next) {
-  const userId = req.body["id"];
+  const userId = req.body["user_id"];
   const userPassword = req.body["password"];
   const userNickname = req.body["nickname"];
   const userEmail = req.body["email"];
@@ -87,16 +93,16 @@ router.post("/", function(req, res, next) {
 
 // 유저 정보 가져오기
 /**
- * @api {get} /users/userinfo/:userId Get User
+ * @api {get} /users/userinfo/:userKey Get User
  * @apiName GetUser
  * @apiGroup User
  *
- * @apiParam (path) {Number} userId userId.
+ * @apiParam (path) {Number} userKey userKey.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
- *     "user_id": 1,
- *     "id": "user1",
+ *     "user_key": 1,
+ *     "user_id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
  *     "image": "image1",
@@ -104,11 +110,11 @@ router.post("/", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.get("/userinfo/:userId", function(req, res, next) {
-  const userId = req.params["userId"];
+router.get("/userinfo/:userKey", function(req, res, next) {
+  const userKey = req.params["userKey"];
 
   user
-    .getUser(userId)
+    .getUser(userKey)
     .then(user => {
       res.status(200).json(user);
     })
@@ -119,20 +125,16 @@ router.get("/userinfo/:userId", function(req, res, next) {
 
 // 유저 정보 가져오기
 /**
- * @api {get} /users/userkey Get UserKey
+ * @api {get} /users/userid/:userId Get UserKey
  * @apiName GetUserKey
  * @apiGroup User
  *
- * * @apiParamExample {json} User Action:
- * {
- *     "id": "user1",
- *     "payload": {}
- * }
+ * @apiParam (path) {Number} userId userId.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
- *     "user_id": 1,
- *     "id": "user1",
+ *     "user_key": 1,
+ *     "user_id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
  *     "image": "image1",
@@ -140,11 +142,11 @@ router.get("/userinfo/:userId", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.get("/userkey", function(req, res, next) {
-  const Id = req.body["id"];
+router.get("/userid/:userId", function(req, res, next) {
+  const userId = req.params["userId"];
 
   user
-    .getUserKey(Id)
+    .getUserId(userId)
     .then(user => {
       res.status(200).json(user);
     })
@@ -155,11 +157,11 @@ router.get("/userkey", function(req, res, next) {
 
 // 유저 정보 수정(닉네임, 프로필사진, 배경사진만 가능)
 /**
- * @api {put} /users/:userId Modify User
+ * @api {put} /users/:userKey Modify User
  * @apiName ModifyUser
  * @apiGroup User
  *
- * @apiParam (path) {Number} userId userId.
+ * @apiParam (path) {Number} userKey userKey.
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
@@ -172,8 +174,8 @@ router.get("/userkey", function(req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
- *     "user_id": 1,
- *     "id": "user1",
+ *     "user_key": 1,
+ *     "user_id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hi",
  *     "image": "picture1"
@@ -181,12 +183,12 @@ router.get("/userkey", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.put("/:userId", function(req, res, next) {
-  const userId = req.params["userId"];
+router.put("/:userKey", function(req, res, next) {
+  const userKey = req.params["userKey"];
 
   user
     .modifyUser(
-      userId,
+      userKey,
       req.body["nickname"],
       req.body["image"],
       req.body["background"]
@@ -201,19 +203,19 @@ router.put("/:userId", function(req, res, next) {
 
 // 회원탈퇴 - 유저 삭제
 /**
- * @api {delete} /users/:userId Delete User
+ * @api {delete} /users/:userKey Delete User
  * @apiName DeleteUser
  * @apiGroup User
  *
- * @apiParam (path) {Number} userId userId.
+ * @apiParam (path) {Number} userKey userKey.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
-router.delete("/:userId", function(req, res, next) {
-  const userId = req.params["userId"];
+router.delete("/:userKey", function(req, res, next) {
+  const userKey = req.params["userKey"];
 
   user
-    .deleteUser(userId)
+    .deleteUser(userKey)
     .then(result => {
       res.status(204).end();
     })

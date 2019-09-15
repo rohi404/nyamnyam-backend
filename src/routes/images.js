@@ -1,22 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const image = require("../database/images");
-const upload = require("../utills/multer-s3");
+const { upload, deleteS3 } = require("../utills/multer-s3");
 
 // 특정 리스트에 이미지 추가
 /**
  * @api {post} /images Upload Image
  * @apiName UploadImage
  * @apiGroup Images
+ * @apiDescription form data로 post 시 file input의 name=file 이여야 함.
+ *
+ * CreateList시 따로 사용할 필요 없음
+ *
+ * ModifyList 사용 전, 새로 추가된 이미지에 사용
  *
  * @apiParam (path) {Number} listId
- * @apiParam {Binary} body body.
- * @apiParamExample {json} User Action:
+ * @apiParam {FormData} body
+ * @apiParamExample {FormData} User Action:
  * {
  *     "listId": 1,
  *     "file": "aaaaa",
  * }
- * @apiSuccessExample {json} Success 마지막 이미지만 응답:
+ * @apiSuccessExample {json} Success
  * HTTP/1.1 200 OK
  * {
  *     "imageId": 4,
@@ -91,8 +96,8 @@ router.get("/:ImageId", function(req, res, next) {
 
   image
     .getImage(ImageId)
-    .then(image => {
-      res.status(200).json(image);
+    .then(result => {
+      res.status(200).json(result);
     })
     .catch(err => {
       next(err);
@@ -104,9 +109,12 @@ router.get("/:ImageId", function(req, res, next) {
  * @api {put} /imagess/:ImageId Modify Image
  * @apiName ModifyImages
  * @apiGroup Images
+ * @apiDescription form data로 post 시 file input의 name=file 이여야 함.
+ *
+ * ModifyList 사용 전, 변경 된 이미지에 사용
  *
  * @apiParam (path) {Number} ImageId
- * @apiParam {Binary} body body.
+ * @apiParam {FormData} body
  *
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
@@ -116,12 +124,16 @@ router.get("/:ImageId", function(req, res, next) {
  *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
  * }
  */
-router.put("/:ImageId", upload.array("file"), function(req, res, next) {
+router.put("/:ImageId", upload.array("file"), async function(req, res, next) {
   const ImageId = req.params["ImageId"];
   const urls = req.files.map(file => file.location);
 
+  await image.getImage(ImageId).then(result => {
+    deleteS3(result.url);
+  });
+
   image
-    .modifyImage(ImageId, urls)
+    .modifyImage(ImageId, urls[0])
     .then(result => {
       res.status(200).json(result);
     })
@@ -140,12 +152,16 @@ router.put("/:ImageId", upload.array("file"), function(req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
-router.delete("/:ImageId", function(req, res, next) {
+router.delete("/:ImageId", async function(req, res, next) {
   const ImageId = req.params["ImageId"];
+
+  await image.getImage(ImageId).then(result => {
+    deleteS3(result.url);
+  });
 
   image
     .deleteImage(ImageId)
-    .then(() => {
+    .then(result => {
       res.status(204).end();
     })
     .catch(err => {

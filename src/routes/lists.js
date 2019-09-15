@@ -2,23 +2,24 @@ const express = require("express");
 const router = express.Router();
 const list = require("../database/lists");
 const image = require("../database/images");
-const upload = require("../utills/multer-s3");
+const { upload, deleteS3 } = require("../utills/multer-s3");
 
-// 리스트 추가 * 이미지 form name "file" 이여야 함
+// 리스트 추가
 /**
  * @api {post} /lists/:folderId Create List
  * @apiName CreateList
  * @apiGroup List
+ * @apiDescription form data로 post 시 file input의 name=file 이여야 함.
  *
  * @apiParam (path) {Number} folderId folderId.
- * @apiParam {Json} body body.
- * @apiParamExample {json} User Action:
+ * @apiParam {FormData} body body.
+ * @apiParamExample {FormData} User Action:
  * {
  *     "name": "냠냠버거",
  *     "folder_id": 2
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
- *     "image": "image1",
+ *     "file" : "aaaa.png"
  *     "payload": {}
  * }
  *
@@ -30,7 +31,7 @@ const upload = require("../utills/multer-s3");
  *     "name": "냠냠버거",
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
- *     "image": "image1",
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/24.png",
  *     "want_count": 0,
  *     "like_count": 0,
  *     "reg_date": "2018-11-24 14:52:30"
@@ -83,7 +84,7 @@ router.post("/", upload.array("file"), function(req, res, next) {
  *     "name": "냠냠버거",
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
- *     "image": "image1",
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/24.png",
  *     "want_count": 1,
  *     "like_count": 2,
  *     "reg_date": "2018-11-24 14:52:30"
@@ -117,7 +118,7 @@ router.get("/listinfo/:listId", function(req, res, next) {
  *     "name": "냠냠버거",
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
- *     "image": "image1",
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/24.png"
  *     "want_count": 1,
  *     "like_count": 2,
  *     "reg_date": "2018-11-24 14:52:30"
@@ -128,7 +129,7 @@ router.get("/listinfo/:listId", function(req, res, next) {
  *     "name": "얌얌피자",
  *     "location": "서울시 도봉구 창동 140-3",
  *     "memo": "수제피자 맛집",
- *     "image": "image2",
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/22.png"
  *     "want_count": 2,
  *     "like_count": 0,
  *     "reg_date": "2018-11-26 23:32:10"
@@ -152,6 +153,7 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  * @api {put} /lists/:listId Modify List
  * @apiName ModifyList
  * @apiGroup List
+ * @apiDescription  list 변경 전, 각각의 이미지에 대한 변경사항을 먼저 images API로 처리해야함
  *
  * @apiParam (path) {Number} listId listId.
  * @apiParam {Json} body body.
@@ -160,7 +162,6 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  *     "name": "얌얌버거",
  *     "location": "서울시 동작구 흑석동 80-1",
  *     "memo": "베이컨 꼭 추가해야함",
- *     "image": "image2",
  *     "want_count": 1,
  *     "like_count": 2,
  *     "payload": {}
@@ -174,18 +175,16 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  *     "name": "얌얌버거",
  *     "location": "서울시 동작구 흑석동 80-1",
  *     "memo": "베이컨 꼭 추가해야함",
- *     "image": "image2",
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/24.png"
  *     "want_count": 1,
  *     "like_count": 2,
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.put("/:listId", upload.array("file"), function(req, res, next) {
-  //TODO: 기존 이미지 모두 삭제하고 다시 업로드?
-  const files = req.files.length > 0;
-  const urls = files ? req.files.map(file => file.location) : null;
+router.put("/:listId", async function(req, res, next) {
   const listId = req.params["listId"];
-  const listImage = !urls ? "default-image" : urls[0];
+  const images = await image.getListImage(listId);
+  const listImage = !images ? "default-image" : images[0].url;
 
   list
     .modifyList(
@@ -198,18 +197,7 @@ router.put("/:listId", upload.array("file"), function(req, res, next) {
       req.body["like_count"]
     )
     .then(list => {
-      if (files) {
-        image
-          .createImage(listId, urls)
-          .then(() => {
-            res.status(200).json(list);
-          })
-          .catch(err => {
-            next(err);
-          });
-      } else {
-        res.status(200).json(list);
-      }
+      res.status(200).json(list);
     })
     .catch(err => {
       next(err);
@@ -226,12 +214,23 @@ router.put("/:listId", upload.array("file"), function(req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
-router.delete("/:listId", function(req, res, next) {
+router.delete("/:listId", async function(req, res, next) {
   const listId = req.params["listId"];
+  const images = await image.getListImage(listId);
 
   list
     .deleteList(listId)
-    .then(result => {
+    .then(() => {
+      images.forEach(result => {
+        image
+          .deleteImage(result.imageId)
+          .then(() => {
+            deleteS3(result.url);
+          })
+          .catch(err => {
+            next(err);
+          });
+      });
       res.status(204).end();
     })
     .catch(err => {

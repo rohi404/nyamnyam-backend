@@ -24,7 +24,7 @@ const getImage = async function(imageId) {
   const imageResult = await database.queryOne(sql);
 
   if (imageResult.length == 0) {
-    throw createError(404, `There is no users with user Id is ${imageId};`);
+    throw createError(404, `There is no images with image Id is ${imageId};`);
   }
 
   return await images.convertToImage(imageResult[0]);
@@ -41,7 +41,7 @@ const getListImage = async function(listId) {
 
   const result = [];
   for (let i = 0; i < imageResult.length; i++) {
-    let tmp = images.convertToImage(imageResult[i])["url"];
+    let tmp = images.convertToImage(imageResult[i]);
     result.push(tmp);
   }
 
@@ -52,7 +52,7 @@ const modifyImage = async function(imageId, url) {
   const queries = [];
 
   if (url != undefined) {
-    queries.push(`name=\'${url}\'`);
+    queries.push(`url=\'${url}\'`);
   }
 
   const sql = `UPDATE Images SET ${queries.join(
