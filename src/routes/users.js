@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const user = require("../database/users");
 const authMail = require("../utills/auth-email");
+const { upload, deleteS3 } = require("../utills/multer-s3");
 
 // 이메일 회원가입 - 인증
 /**
@@ -40,6 +41,7 @@ router.post("/auth", authMail, function(req, res, next) {
  * @api {post} /users Create User
  * @apiName CreateUser
  * @apiGroup User
+ * @apiDescription form data로 post 시 file input의 name=file 이여야 함.
  *
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
@@ -49,7 +51,7 @@ router.post("/auth", authMail, function(req, res, next) {
  *     "nickname": "hello",
  *     "email": "user1@gmail.com",
  *     "image": "image1",
- *     "background": "image2",
+ *     "background": "#fffff",
  *     "payload": {}
  * }
  *
@@ -61,17 +63,20 @@ router.post("/auth", authMail, function(req, res, next) {
  *     "password": "qwerty",
  *     "nickname": "hello",
  *     "email": "user1@gmail.com",
- *     "image": "image1",
- *     "background": "image2",
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/1.png",
+ *     "background": "#fffff",
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.post("/", function(req, res, next) {
+router.post("/", upload("file"), function(req, res, next) {
+  const files = req.files.length > 0;
+  const urls = files ? req.files.map(file => file.location) : null;
+
   const userId = req.body["user_id"];
   const userPassword = req.body["password"];
   const userNickname = req.body["nickname"];
   const userEmail = req.body["email"];
-  const userProfile = req.body["image"];
+  const userProfile = !urls ? "default-image" : urls[0];
   const userBackground = req.body["background"];
 
   user
@@ -105,7 +110,7 @@ router.post("/", function(req, res, next) {
  *     "user_id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
- *     "image": "image1",
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/1.png",
  *     "background": "image2"
  *     "reg_date": "2018-11-24 14:52:30"
  * }
@@ -137,8 +142,8 @@ router.get("/userinfo/:userKey", function(req, res, next) {
  *     "user_id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hello",
- *     "image": "image1",
- *     "background": "image2"
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/1.png",
+ *     "background": "#fffff",
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
@@ -166,8 +171,8 @@ router.get("/userid/:userId", function(req, res, next) {
  * @apiParamExample {json} User Action:
  * {
  *     "nickname": "hi",
- *     "image": "picture1"
- *     "background": "picture2"
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/3.png"
+ *     "background": "#fffff"
  *     "payload": {}
  * }
  *
@@ -178,19 +183,22 @@ router.get("/userid/:userId", function(req, res, next) {
  *     "user_id": "user1",
  *     "password": "qwerty",
  *     "nickname": "hi",
- *     "image": "picture1"
- *     "background": "picture2",
+ *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/3.png"
+ *     "background": "#fffff",
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.put("/:userKey", function(req, res, next) {
+router.put("/:userKey", upload("file"), function(req, res, next) {
   const userKey = req.params["userKey"];
+
+  const files = req.files.length > 0;
+  const urls = files ? req.files.map(file => file.location) : undefined;
 
   user
     .modifyUser(
       userKey,
       req.body["nickname"],
-      req.body["image"],
+      urls,
       req.body["background"]
     )
     .then(result => {
