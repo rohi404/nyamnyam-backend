@@ -6,7 +6,7 @@ const { upload, deleteS3 } = require("../utills/multer-s3");
 
 // 리스트 추가
 /**
- * @api {post} /lists/:folderId Create List
+ * @api {post} /lists Create List
  * @apiName CreateList
  * @apiGroup List
  * @apiDescription form data로 post 시 file input의 name=file 이여야 함.

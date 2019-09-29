@@ -106,17 +106,12 @@ router.get("/listusers/:listId", function(req, res, next) {
 });
 
 /**
- * @api {get} /checks/listuser/ Get List User
+ * @api {get} /checks/listuser/:userKey/:listId Get List User
  * @apiName GetListUser
  * @apiGroup Check
  *
- * @apiParam {Json} body body.
- * @apiParamExample {json} User Action:
- * {
- *     "user_key": 1,
- *     "list_id": 1,
- *     "payload": {}
- * }
+ * @apiParam (path) {Number} listId listId.
+ *  @apiParam (path) {Number} userKey userKey.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
@@ -127,9 +122,11 @@ router.get("/listusers/:listId", function(req, res, next) {
  *     "like": 0
  * }
  */
-router.get("/listuser", function(req, res, next) {
-  const userKey = req.body["user_key"];
-  const listId = req.body["list_id"];
+router.get("/listuser/:userKey/:listId", function(req, res, next) {
+  const listId = req.params["listId"];
+  const userKey = req.params["userKey"];
+
+  console.log(listId, userKey);
 
   check
     .getListUser(userKey, listId)
