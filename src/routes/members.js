@@ -49,7 +49,7 @@ router.post("/", function(req, res, next) {
  * HTTP/1.1 200 OK
  *[
  *  {
- *     "folder_id": 1,
+ *     "folderId": 1,
  *     "leader": 1,
  *     "name": "folder1"
  *     "emoji": "013",
@@ -58,7 +58,7 @@ router.post("/", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  *  },
  *  {
- *     "folder_id": 2,
+ *     "folderId": 2,
  *     "leader": 2,
  *     "name": "folder2"
  *     "emoji": "012",
@@ -116,6 +116,82 @@ router.get("/folderusers/:folderId", function(req, res, next) {
 
   member
     .getFolderUsers(folderId)
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+/**
+ * @api {get} /members/usersfolders/:userKey Get UsersFolders
+ * @apiName GetUsersFolders
+ * @apiGroup Member
+ *
+ * @apiParam (path) {Number} userKey userKey.
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ *[
+ *  {
+ *     "folderId": 1,
+ *     "leader": 1,
+ *     "name": "folder1"
+ *     "emoji": "013",
+ *     "color": "#ffffff",
+ *     "link": "http://nyamnyam",
+ *     "reg_date": "2018-11-24 14:52:30",
+ *     "member": [
+ *       {
+           "userKey": 1,
+            "userId": "user1",
+            "password": "qwerty",
+            "nickname": "hello",
+            "email": "aa@example.com",
+            "image": "image1",
+            "background": "#fffff",
+            "reg_date": "2019-06-18T01:00:57.000Z"
+         },
+         {
+            "userKey": 3,
+            "userId": "user3",
+            "password": "qwerty",
+            "nickname": "hi",
+            "email": "bb@example.com",
+            "image": "image1",
+            "background": "#asasa",
+            "reg_date": "2019-06-18T01:04:33.000Z"
+         }
+ *     ]
+ *  },
+ *  {
+ *     "folderId": 2,
+ *     "leader": 2,
+ *     "name": "folder2"
+ *     "emoji": "012",
+ *     "color": "#000000",
+ *     "link": "http://nyamnyam/2",
+ *     "reg_date": "2018-11-30 13:22:10",
+ *     "member": [
+ *       {
+ *         "userKey": 1,
+            "userId": "user1",
+            "password": "qwerty",
+            "nickname": "hello",
+            "email": "aa@example.com",
+            "image": "image1",
+            "background": "#fffff",
+            "reg_date": "2019-06-18T01:00:57.000Z"
+ *       }
+ *     ]
+ *  }
+ * ]
+ */
+router.get("/usersfolders/:userKey", function(req, res, next) {
+  const userKey = req.params["userKey"];
+
+  member
+    .getAllUserFolders(userKey, folder)
     .then(result => {
       res.status(200).json(result);
     })

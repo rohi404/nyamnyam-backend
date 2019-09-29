@@ -63,6 +63,24 @@ const getFolderUsers = async function(folderId) {
   return await result;
 };
 
+const getAllUserFolders = async function(userKey, folder) {
+  const folderResult = await getUserFolders(userKey, folder);
+
+  if (folderResult.length == 0) {
+    throw createError(404, `There is no folders with user Id is ${userKey};`);
+  }
+
+  let memberResult = [];
+  for (let i = 0; i < folderResult.length; i++) {
+    let tmp = await getFolderUsers(folderResult[i]["folderId"]);
+    memberResult.push(folderResult[i]);
+    memberResult[i]["member"] = tmp;
+  }
+
+  return await memberResult;
+};
+
+
 const deleteMember = async function(userKey, folderId) {
   const conn = database.createConnection();
 
@@ -78,5 +96,6 @@ module.exports = {
   getMember,
   getUserFolders,
   getFolderUsers,
+  getAllUserFolders,
   deleteMember
 };
