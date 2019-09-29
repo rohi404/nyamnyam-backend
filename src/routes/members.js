@@ -141,6 +141,7 @@ router.get("/folderusers/:folderId", function(req, res, next) {
  *     "color": "#ffffff",
  *     "link": "http://nyamnyam",
  *     "reg_date": "2018-11-24 14:52:30",
+ *     "count": 2,
  *     "member": [
  *       {
            "userKey": 1,
@@ -172,6 +173,7 @@ router.get("/folderusers/:folderId", function(req, res, next) {
  *     "color": "#000000",
  *     "link": "http://nyamnyam/2",
  *     "reg_date": "2018-11-30 13:22:10",
+ *     "count": 1,
  *     "member": [
  *       {
  *         "userKey": 1,

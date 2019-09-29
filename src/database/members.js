@@ -74,6 +74,7 @@ const getAllUserFolders = async function(userKey, folder) {
   for (let i = 0; i < folderResult.length; i++) {
     let tmp = await getFolderUsers(folderResult[i]["folderId"]);
     memberResult.push(folderResult[i]);
+    memberResult[i]["count"] = tmp.length;
     memberResult[i]["member"] = tmp;
   }
 
