@@ -30,7 +30,7 @@ const getFolder = async function (folderId) {
   return await folders.convertToFolder(folderResult[0]);
 };
 
-const modifyFolder = async function (folderId, folderName, folderEmoji, folderColor, folderLeader) {
+const modifyFolder = async function (folderId, folderName, folderEmoji, folderColor, folderLeader, folderLink) {
   const queries = [];
 
   if (folderName != undefined) {
@@ -44,6 +44,9 @@ const modifyFolder = async function (folderId, folderName, folderEmoji, folderCo
   }
   if (folderLeader != undefined) {
     queries.push(`leader=\'${folderLeader}\'`);
+  }
+  if (folderLink != undefined) {
+    queries.push(`link=\'${folderLink}\'`);
   }
 
   const sql = `UPDATE Folders SET ${queries.join(", ")} WHERE folder_id = ${folderId};`;

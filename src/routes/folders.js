@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const folder = require("../database/folders");
 
-// 폴더 추가 - 폴더 생성
 /**
  * @api {post} /folders Create Folder
  * @apiName CreateFolder
@@ -46,7 +45,6 @@ router.post("/", function(req, res, next) {
     });
 });
 
-// 폴더 정보 가져오기
 /**
  * @api {get} /folders/:folderId Get Folder
  * @apiName GetFolder
@@ -78,7 +76,6 @@ router.get("/:folderId", function(req, res, next) {
     });
 });
 
-// 폴더 정보 수정(이름, 이모지, 배경 컬러)
 /**
  * @api {put} /folders/:folderId Modify Folder
  * @apiName ModifyFolder
@@ -92,6 +89,7 @@ router.get("/:folderId", function(req, res, next) {
  *     "name": "folder2",
  *     "emoji": "014",
  *     "color": "#fffffg",
+ *     "link": "http://nyam",
  *     "payload": {}
  * }
  *
@@ -103,7 +101,7 @@ router.get("/:folderId", function(req, res, next) {
  *     "name": "folder2"
  *     "emoji": "014",
  *     "color": "#fffffg",
- *     "link": "http://nyamnyam",
+ *     "link": "http://nyam",
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
@@ -116,7 +114,8 @@ router.put("/:folderId", function(req, res, next) {
       req.body["name"],
       req.body["emoji"],
       req.body["color"],
-      req.body["leader"]
+      req.body["leader"],
+      req.body["link"],
     )
     .then(result => {
       res.status(200).json(result);
@@ -126,7 +125,6 @@ router.put("/:folderId", function(req, res, next) {
     });
 });
 
-// 폴더 삭제
 /**
  * @api {delete} /folders/:folderId Delete Folder
  * @apiName DeleteFolder
