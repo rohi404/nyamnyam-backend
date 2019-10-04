@@ -10,12 +10,14 @@ const createUser = async function(
   image,
   background
 ) {
-  const sql1 = `INSERT INTO Users (user_id, password, nickname, email, image, background ) VALUES ('${userId}', '${password}', '${nickname}', '${email}', '${image}', '${background}' );`;
+  const sqlwithImg = `INSERT INTO Users (user_id, password, nickname, email, image, background ) VALUES ('${userId}', '${password}', '${nickname}', '${email}', '${image}', '${background}' );`;
+  const sqlwithoutImg = `INSERT INTO Users (user_id, password, nickname, email, background ) VALUES ('${userId}', '${password}', '${nickname}', '${email}', '${background}' );`;
+  const sql1 = image !== undefined ? sqlwithImg : sqlwithoutImg;
   const result = await pool.execute(sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS user_key;`;
   const [result2] = await pool.execute(sql2);
-
+  console.log(result2);
   const userKey = result2[0]["user_key"];
   return await getUser(userKey);
 };
