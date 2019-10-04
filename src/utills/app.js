@@ -1,3 +1,5 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const createError = require("http-errors");
 const express = require("express");
 const logger = require("morgan");

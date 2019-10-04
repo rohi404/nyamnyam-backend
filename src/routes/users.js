@@ -67,15 +67,14 @@ router.post("/auth", authMail, function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.post("/", upload.array("file"), function(req, res, next) {
-  const files = req.files.length > 0;
-  const urls = files ? req.files.map(file => file.location) : null;
+router.post("/", upload.single("file"), function(req, res, next) {
+  const url = req.file ? req.file.location : undefined;
 
   const userId = req.body["user_id"];
   const userPassword = req.body["password"];
   const userNickname = req.body["nickname"];
   const userEmail = req.body["email"];
-  const userProfile = !urls ? "default-image" : urls[0];
+  const userProfile = url;
   const userBackground = req.body["background"];
 
   user
@@ -186,19 +185,13 @@ router.get("/userid/:userId", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.put("/:userKey", upload.array("file"), function(req, res, next) {
+router.put("/:userKey", upload.single("file"), function(req, res, next) {
   const userKey = req.params["userKey"];
 
-  const files = req.files.length > 0;
-  const urls = files ? req.files.map(file => file.location) : undefined;
+  const url = req.file ? req.file.location : undefined;
 
   user
-    .modifyUser(
-      userKey,
-      req.body["nickname"],
-      urls,
-      req.body["background"]
-    )
+    .modifyUser(userKey, req.body["nickname"], url, req.body["background"])
     .then(result => {
       res.status(200).json(result);
     })
