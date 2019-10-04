@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const member = require("../database/members");
 const folder = require("../database/folders");
+const list = require("../database/lists");
+const check = require("../database/checks");
 
 /**
  * @api {post} /members Create Member
@@ -195,6 +197,41 @@ router.get("/usersfolders/:userKey", function(req, res, next) {
     .getAllUserFolders(userKey, folder)
     .then(result => {
       res.status(200).json(result);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+/**
+ * @api {delete} /members/:userKey/:folderId Delete Member
+ * @apiName DeleteMember
+ * @apiGroup Member
+ *
+ * @apiParam (path) {Number} userKey userKey.
+ * @apiParam (path) {Number} folderId folderId.
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 204 No Content
+ */
+router.delete("/:userKey/:folderId", function(req, res, next) {
+  const userKey = req.params["userKey"];
+  const folderId = req.params["folderId"];
+
+  member
+    .deleteMember(userKey, folderId)
+    .then(result => {})
+    .catch(err => {
+      next(err);
+    });
+
+  list
+    .getFolderLists(folderId)
+    .then(result => {
+      let tmp;
+      for(let i=0; i<result.length; i++) {
+        tmp = check.deleteCheck(userKey, result[i]["listId"]);
+      }
+      res.status(200).json(tmp);
     })
     .catch(err => {
       next(err);
