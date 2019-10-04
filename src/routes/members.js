@@ -203,7 +203,17 @@ router.get("/usersfolders/:userKey", function(req, res, next) {
     });
 });
 
-router.delete("/exitfolder/:userKey/:folderId", function(req, res, next) {
+/**
+ * @api {delete} /members/:userKey/:folderId Delete Member
+ * @apiName DeleteMember
+ * @apiGroup Member
+ *
+ * @apiParam (path) {Number} userKey userKey.
+ * @apiParam (path) {Number} folderId folderId.
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 204 No Content
+ */
+router.delete("/:userKey/:folderId", function(req, res, next) {
   const userKey = req.params["userKey"];
   const folderId = req.params["folderId"];
 
