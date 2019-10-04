@@ -7,7 +7,7 @@ const createReview = async function(userKey, listId, content, image) {
   const result = await pool.execute(sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
-  const result2 = await pool.execute(sql2);
+  const [result2] = await pool.execute(sql2);
 
   const reviewId = result2[0]["id"];
   return await getReview(reviewId);
@@ -15,7 +15,7 @@ const createReview = async function(userKey, listId, content, image) {
 
 const getReview = async function(reviewId) {
   const sql = `SELECT * FROM Reviews WHERE id = ${reviewId};`;
-  const reviewResult = await pool.execute(sql);
+  const [reviewResult] = await pool.execute(sql);
 
   if (reviewResult.length == 0) {
     throw createError(
@@ -29,7 +29,7 @@ const getReview = async function(reviewId) {
 
 const getListReviews = async function(listId) {
   const sql = `SELECT * FROM Reviews WHERE list_id = ${listId};`;
-  const reviewResult = await pool.execute(sql);
+  const [reviewResult] = await pool.execute(sql);
 
   if (reviewResult.length == 0) {
     throw createError(404, `There is no reviews with list Id is ${listId};`);

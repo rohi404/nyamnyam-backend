@@ -8,7 +8,7 @@ const createImage = async function(listId, url) {
     let result = await pool.execute(sql1);
   }
   const sql2 = `SELECT LAST_INSERT_ID() AS image_id;`;
-  const result2 = await pool.execute(sql2);
+  const [result2] = await pool.execute(sql2);
 
   const imageId = result2[0]["image_id"];
   return await getImage(imageId);
@@ -16,7 +16,7 @@ const createImage = async function(listId, url) {
 
 const getImage = async function(imageId) {
   const sql = `SELECT * FROM Images WHERE image_id = ${imageId};`;
-  const imageResult = await pool.execute(sql);
+  const [imageResult] = await pool.execute(sql);
 
   if (imageResult.length == 0) {
     throw createError(404, `There is no images with image Id is ${imageId};`);
@@ -27,7 +27,7 @@ const getImage = async function(imageId) {
 
 const getListImage = async function(listId) {
   const sql = `SELECT * FROM Images WHERE list_id = ${listId};`;
-  const imageResult = await pool.execute(sql);
+  const [imageResult] = await pool.execute(sql);
 
   if (imageResult.length == 0) {
     throw createError(404, `There is no images with list Id is ${listId};`);
@@ -60,7 +60,7 @@ const modifyImage = async function(imageId, url) {
 const deleteImage = async function(imageId) {
   const sql1 = `DELETE FROM Images WHERE image_id = ${imageId};`;
 
-  const result1 = await pool.execute(sql1);
+  const [result1] = await pool.execute(sql1);
 
   return result1;
 };

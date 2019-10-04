@@ -10,13 +10,11 @@ const createUser = async function(
   image,
   background
 ) {
-  const conn = database.createConnection();
-
   const sql1 = `INSERT INTO Users (user_id, password, nickname, email, image, background ) VALUES ('${userId}', '${password}', '${nickname}', '${email}', '${image}', '${background}' );`;
   const result = await pool.execute(sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS user_key;`;
-  const result2 = await pool.execute(sql2);
+  const [result2] = await pool.execute(sql2);
 
   const userKey = result2[0]["user_key"];
   return await getUser(userKey);
@@ -24,7 +22,7 @@ const createUser = async function(
 
 const getUser = async function(userKey) {
   const sql = `SELECT * FROM Users WHERE user_key = ${userKey}`;
-  const userResult = await pool.execute(sql);
+  const [userResult] = await pool.execute(sql);
 
   if (userResult.length == 0) {
     throw createError(404, `There is no users with user key is ${userKey}`);
@@ -35,7 +33,7 @@ const getUser = async function(userKey) {
 
 const getUserId = async function(Id) {
   const sql = `SELECT * FROM Users WHERE user_id = '${Id}'`;
-  const userResult = await pool.execute(sql);
+  const [userResult] = await pool.execute(sql);
 
   if (userResult.length == 0) {
     throw createError(404, `There is no users with user id is ${Id}`);

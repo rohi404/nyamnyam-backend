@@ -9,11 +9,11 @@ const createList = async function(folderId, name, location, memo, image) {
   const result = await pool.execute(sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS list_id;`;
-  const result2 = await pool.execute(sql2);
-  const listId = result2[0]["list_id"];
+  const [rows] = await pool.execute(sql2);
+  const listId = rows[0]["list_id"];
 
   const sql3 = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
-  const memberResult = await pool.execute(sql3);
+  const [memberResult] = await pool.execute(sql3);
 
   for (let i = 0; i < memberResult.length; i++) {
     let userKey = members.convertToMember(memberResult[i])["userKey"];
@@ -25,7 +25,7 @@ const createList = async function(folderId, name, location, memo, image) {
 
 const getList = async function(listId) {
   const sql = `SELECT * FROM Lists WHERE list_id = ${listId}`;
-  const listResult = await pool.execute(sql);
+  const [listResult] = await pool.execute(sql);
 
   if (listResult.length == 0) {
     throw createError(404, `There is no list with list Id is ${listId}`);
@@ -36,7 +36,7 @@ const getList = async function(listId) {
 
 const getFolderLists = async function(folderId) {
   const sql = `SELECT * FROM Lists WHERE folder_id = ${folderId}`;
-  const listResult = await pool.execute(sql);
+  const [listResult] = await pool.execute(sql);
 
   if (listResult.length == 0) {
     throw createError(404, `There is no list with folder Id is ${folderId}`);

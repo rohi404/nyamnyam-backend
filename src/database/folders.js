@@ -8,7 +8,7 @@ const createFolder = async function(leader, name, emoji, color) {
   const result = await pool.execute(sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS folder_id;`;
-  const result2 = await pool.execute(sql2);
+  const [result2] = await pool.execute(sql2);
   const folderId = result2[0]["folder_id"];
 
   const result3 = members.createMember(leader, folderId);
@@ -18,7 +18,7 @@ const createFolder = async function(leader, name, emoji, color) {
 
 const getFolder = async function(folderId) {
   const sql = `SELECT * FROM Folders WHERE folder_id = ${folderId}`;
-  const folderResult = await pool.execute(sql);
+  const [folderResult] = await pool.execute(sql);
 
   if (folderResult.length == 0) {
     throw createError(404, `There is no folders with folder Id is ${folderId}`);
