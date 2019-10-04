@@ -193,12 +193,7 @@ router.put("/:userKey", upload.array("file"), function(req, res, next) {
   const urls = files ? req.files.map(file => file.location) : undefined;
 
   user
-    .modifyUser(
-      userKey,
-      req.body["nickname"],
-      urls,
-      req.body["background"]
-    )
+    .modifyUser(userKey, req.body["nickname"], urls, req.body["background"])
     .then(result => {
       res.status(200).json(result);
     })

@@ -1,13 +1,13 @@
-const mysql = require('mysql');
-const credentials = require('../utills/credentials');
+const mysql = require("mysql");
+const credentials = require("../utills/credentials");
 
 const createConnection = function() {
   return mysql.createConnection(credentials.mysqlConfig);
 };
 
 const query = function(conn, sql) {
-  return new Promise(function (resolve, reject) {
-    conn.query(sql, [], function (err, results, fields) {
+  return new Promise(function(resolve, reject) {
+    conn.query(sql, [], function(err, results, fields) {
       if (err) {
         console.error(err);
         reject(err);
@@ -18,11 +18,11 @@ const query = function(conn, sql) {
   });
 };
 
-const endConnection = function (conn) {
+const endConnection = function(conn) {
   conn.end();
 };
 
-const queryOne = async function (sql) {
+const queryOne = async function(sql) {
   const conn = createConnection();
   const results = await query(conn, sql);
   endConnection(conn);
