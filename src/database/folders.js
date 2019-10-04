@@ -5,10 +5,10 @@ const members = require("./members");
 
 const createFolder = async function(leader, name, emoji, color) {
   const sql1 = `INSERT INTO Folders (leader, name, emoji, color) VALUES ('${leader}', '${name}', '${emoji}', '${color}');`;
-  const result = await pool.query(sql1);
+  const result = await pool.execute(sql1);
 
   const sql2 = `SELECT LAST_INSERT_ID() AS folder_id;`;
-  const result2 = await pool.query(sql2);
+  const result2 = await pool.execute(sql2);
   const folderId = result2[0]["folder_id"];
 
   const result3 = members.createMember(leader, folderId);
@@ -18,7 +18,7 @@ const createFolder = async function(leader, name, emoji, color) {
 
 const getFolder = async function(folderId) {
   const sql = `SELECT * FROM Folders WHERE folder_id = ${folderId}`;
-  const folderResult = await pool.query(sql);
+  const folderResult = await pool.execute(sql);
 
   if (folderResult.length == 0) {
     throw createError(404, `There is no folders with folder Id is ${folderId}`);
@@ -56,7 +56,7 @@ const modifyFolder = async function(
   const sql = `UPDATE Folders SET ${queries.join(
     ", "
   )} WHERE folder_id = ${folderId};`;
-  const result = await pool.query(sql);
+  const result = await pool.execute(sql);
 
   return await getFolder(folderId);
 };
@@ -66,9 +66,9 @@ const deleteFolder = async function(folderId) {
   const sql2 = `DELETE FROM Lists WHERE folder_id = ${folderId};`;
   const sql3 = `DELETE FROM Members WHERE folder_id = ${folderId};`;
 
-  const result1 = await pool.query(sql1);
-  const result2 = await pool.query(sql2);
-  const result3 = await pool.query(sql3);
+  const result1 = await pool.execute(sql1);
+  const result2 = await pool.execute(sql2);
+  const result3 = await pool.execute(sql3);
 
   return result1;
 };
