@@ -1,5 +1,5 @@
 const createError = require("http-errors");
-const pool = require("./db");
+const pool = require("./database");
 const checks = require("../model/checks");
 
 const createCheck = async function(userKey, listId) {
