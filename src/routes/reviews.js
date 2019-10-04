@@ -18,7 +18,6 @@ moment.tz.setDefault("Asia/Seoul");
  *     "list_id": 1,
  *     "content": "hello",
  *     "image": "image1"
- *     "payload": {}
  * }
  *
  * @apiSuccessExample {json} Success:
@@ -126,8 +125,7 @@ router.get("/listreviews/:listId", function(req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "content": "hi",
- *     "payload": {}
+ *     "content": "hi"
  * }
  *
  * @apiSuccessExample {json} Success:

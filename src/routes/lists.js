@@ -20,7 +20,6 @@ const { upload, deleteS3 } = require("../utills/multer-s3");
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
  *     "file" : "aaaa.png"
- *     "payload": {}
  * }
  *
  * @apiSuccessExample {json} Success:
@@ -154,6 +153,7 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  * @apiName ModifyList
  * @apiGroup List
  * @apiDescription  list 변경 전, 각각의 이미지에 대한 변경사항을 먼저 images API로 처리해야함
+ * @apiDescription  visited 필드 변경 시 0, 1로만 저장해야함(0 - 방문전, 1 - 방문후)
  *
  * @apiParam (path) {Number} listId listId.
  * @apiParam {Json} body body.
@@ -165,7 +165,6 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  *     "want_count": 1,
  *     "like_count": 2,
  *     "visited": 1
- *     "payload": {}
  * }
  *
  * @apiSuccessExample {json} Success:

@@ -51,8 +51,7 @@ router.post("/auth", authMail, function(req, res, next) {
  *     "nickname": "hello",
  *     "email": "user1@gmail.com",
  *     "image": "image1",
- *     "background": "#fffff",
- *     "payload": {}
+ *     "background": "#fffff"
  * }
  *
  * @apiSuccessExample {json} Success:
@@ -173,7 +172,6 @@ router.get("/userid/:userId", function(req, res, next) {
  *     "nickname": "hi",
  *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/3.png"
  *     "background": "#fffff"
- *     "payload": {}
  * }
  *
  * @apiSuccessExample {json} Success:

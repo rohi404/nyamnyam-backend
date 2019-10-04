@@ -12,8 +12,7 @@ const folder = require("../database/folders");
  * @apiParamExample {json} User Action:
  * {
  *     "user_key": 1,
- *     "folder_id": 1,
- *     "payload": {}
+ *     "folder_id": 1
  * }
  *
  * @apiSuccessExample {json} Success:

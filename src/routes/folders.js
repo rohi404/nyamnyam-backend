@@ -13,8 +13,7 @@ const folder = require("../database/folders");
  *     "user_key": 1,
  *     "name": "folder1",
  *     "emoji": "013",
- *     "color": "#ffffff",
- *     "payload": {}
+ *     "color": "#ffffff"
  * }
  *
  * @apiSuccessExample {json} Success:
@@ -89,8 +88,7 @@ router.get("/:folderId", function(req, res, next) {
  *     "name": "folder2",
  *     "emoji": "014",
  *     "color": "#fffffg",
- *     "link": "http://nyam",
- *     "payload": {}
+ *     "link": "http://nyam"
  * }
  *
  * @apiSuccessExample {json} Success:

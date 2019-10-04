@@ -12,8 +12,7 @@ const list = require("../database/lists");
  * @apiParamExample {json} User Action:
  * {
  *     "user_key": 1,
- *     "list_id": 1,
- *     "payload": {}
+ *     "list_id": 1
  * }
  *
  * @apiSuccessExample {json} Success:
@@ -149,8 +148,7 @@ router.get("/listuser/:userKey/:listId", function(req, res, next) {
  *     "user_key": 1,
  *     "list_id": 1
  *     "want": 0,
- *     "like": 1,
- *     "payload": {}
+ *     "like": 1
  * }
  *
  * @apiSuccessExample {json} Success:
