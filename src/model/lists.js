@@ -9,6 +9,7 @@ const convertToList = function(result) {
     reg_date: result['reg_date'],
     want_count: parseInt(result['want_count']),
     like_count: parseInt(result['like_count']),
+    visited: parseInt(result['visited'])
   }
 };
 

@@ -62,7 +62,8 @@ const modifyList = async function(
   listMemo,
   listImage,
   wantCount,
-  likeCount
+  likeCount,
+  listVisited
 ) {
   const res = await getList(listId);
   const queries = [];
@@ -80,6 +81,9 @@ const modifyList = async function(
   }
   if (listImage != undefined) {
     queries.push(`image=\'${listImage}\'`);
+  }
+  if (listVisited != undefined) {
+    queries.push(`visited=\'${listVisited}\'`);
   }
   // wantCount, likeCount 입력이 1이면 카운트수 증가 0이면 카운트수 감소
   if (wantCount != undefined) {

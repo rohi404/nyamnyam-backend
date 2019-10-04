@@ -88,7 +88,7 @@ router.get("/:folderId", function(req, res, next) {
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *     "user_key": 1,
+ *     "leader": 1,
  *     "name": "folder2",
  *     "emoji": "014",
  *     "color": "#fffffg",
@@ -116,7 +116,7 @@ router.put("/:folderId", function(req, res, next) {
       req.body["name"],
       req.body["emoji"],
       req.body["color"],
-      req.body["user_key"]
+      req.body["leader"]
     )
     .then(result => {
       res.status(200).json(result);

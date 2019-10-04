@@ -164,6 +164,7 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  *     "memo": "베이컨 꼭 추가해야함",
  *     "want_count": 1,
  *     "like_count": 2,
+ *     "visited": 1
  *     "payload": {}
  * }
  *
@@ -178,6 +179,7 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/24.png"
  *     "want_count": 1,
  *     "like_count": 2,
+ *     "visited": 1,
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
@@ -194,7 +196,8 @@ router.put("/:listId", async function(req, res, next) {
       req.body["memo"],
       listImage,
       req.body["want_count"],
-      req.body["like_count"]
+      req.body["like_count"],
+      req.body["visited"]
     )
     .then(list => {
       res.status(200).json(list);
