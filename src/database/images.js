@@ -1,19 +1,14 @@
 const createError = require("http-errors");
-const database = require("../database/database");
+const pool = require("./database");
 const images = require("../model/images");
 
 const createImage = async function(listId, url) {
-  const conn = database.createConnection();
-
   for (let i = 0; i < url.length; i++) {
     let sql1 = `INSERT INTO Images (list_id, url) VALUES ('${listId}', '${url[i]}');`;
-    let result = await database.query(conn, sql1);
+    let result = await pool.execute(sql1);
   }
-
   const sql2 = `SELECT LAST_INSERT_ID() AS image_id;`;
-  const result2 = await database.query(conn, sql2);
-
-  database.endConnection(conn);
+  const result2 = await pool.execute(sql2);
 
   const imageId = result2[0]["image_id"];
   return await getImage(imageId);
@@ -21,7 +16,7 @@ const createImage = async function(listId, url) {
 
 const getImage = async function(imageId) {
   const sql = `SELECT * FROM Images WHERE image_id = ${imageId};`;
-  const imageResult = await database.queryOne(sql);
+  const imageResult = await pool.execute(sql);
 
   if (imageResult.length == 0) {
     throw createError(404, `There is no images with image Id is ${imageId};`);
@@ -31,9 +26,8 @@ const getImage = async function(imageId) {
 };
 
 const getListImage = async function(listId) {
-  const conn = database.createConnection();
   const sql = `SELECT * FROM Images WHERE list_id = ${listId};`;
-  const imageResult = await database.query(conn, sql);
+  const imageResult = await pool.execute(sql);
 
   if (imageResult.length == 0) {
     throw createError(404, `There is no images with list Id is ${listId};`);
@@ -58,17 +52,15 @@ const modifyImage = async function(imageId, url) {
   const sql = `UPDATE Images SET ${queries.join(
     ", "
   )} WHERE image_id = ${imageId};`;
-  const result = await database.queryOne(sql);
+  const result = await pool.execute(sql);
 
   return await getImage(imageId);
 };
 
 const deleteImage = async function(imageId) {
-  const conn = database.createConnection();
-
   const sql1 = `DELETE FROM Images WHERE image_id = ${imageId};`;
 
-  const result1 = await database.query(conn, sql1);
+  const result1 = await pool.execute(sql1);
 
   return result1;
 };
