@@ -138,7 +138,7 @@ router.get("/listuser/:userKey/:listId", function(req, res, next) {
 });
 
 /**
- * @api {put} /checks/ Modify Check
+ * @api {put} /checks Modify Check
  * @apiName ModifyCheck
  * @apiGroup Check
  *

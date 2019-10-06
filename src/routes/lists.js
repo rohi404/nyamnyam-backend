@@ -4,15 +4,12 @@ const list = require("../database/lists");
 const image = require("../database/images");
 const { upload, deleteS3 } = require("../utills/multer-s3");
 
-// 리스트 추가
 /**
  * @api {post} /lists Create List
  * @apiName CreateList
  * @apiGroup List
- * @apiDescription form data로 post 시 file input의 name=file 이여야 함.
  *
- * @apiParam (path) {Number} folderId folderId.
- * @apiParam {FormData} body body.
+ * @apiParam {FormData} body form data로 post 시 file input의 name=file 이여야 함.
  * @apiParamExample {FormData} User Action:
  * {
  *     "name": "냠냠버거",
@@ -33,6 +30,7 @@ const { upload, deleteS3 } = require("../utills/multer-s3");
  *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/24.png",
  *     "want_count": 0,
  *     "like_count": 0,
+ *     "visited": 0,
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
@@ -86,6 +84,7 @@ router.post("/", upload.array("file"), function(req, res, next) {
  *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/24.png",
  *     "want_count": 1,
  *     "like_count": 2,
+ *     "visited": 0,
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
@@ -120,6 +119,7 @@ router.get("/listinfo/:listId", function(req, res, next) {
  *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/24.png"
  *     "want_count": 1,
  *     "like_count": 2,
+ *     "visited": 0,
  *     "reg_date": "2018-11-24 14:52:30"
  * },
  * {
@@ -131,6 +131,7 @@ router.get("/listinfo/:listId", function(req, res, next) {
  *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/22.png"
  *     "want_count": 2,
  *     "like_count": 0,
+ *     "visited": 0,
  *     "reg_date": "2018-11-26 23:32:10"
  * }
  */
@@ -147,7 +148,6 @@ router.get("/folderlists/:folderId", function(req, res, next) {
     });
 });
 
-// 리스트 정보 수정(이름, 위치, 메모, 사진)
 /**
  * @api {put} /lists/:listId Modify List
  * @apiName ModifyList
@@ -206,7 +206,6 @@ router.put("/:listId", async function(req, res, next) {
     });
 });
 
-// 리스트 삭제
 /**
  * @api {delete} /lists/:listId Delete List
  * @apiName DeleteList

@@ -3,19 +3,13 @@ const router = express.Router();
 const image = require("../database/images");
 const { upload, deleteS3 } = require("../utills/multer-s3");
 
-// 특정 리스트에 이미지 추가
 /**
  * @api {post} /images Upload Image
  * @apiName UploadImage
  * @apiGroup Images
- * @apiDescription form data로 post 시 file input의 name=file 이여야 함.
+ * @apiDescription ModifyList 사용 전, 새로 추가된 이미지에 사용
  *
- * CreateList시 따로 사용할 필요 없음
- *
- * ModifyList 사용 전, 새로 추가된 이미지에 사용
- *
- * @apiParam (path) {Number} listId
- * @apiParam {FormData} body
+ * @apiParam {FormData} body form data로 post 시 file input의 name=file 이여야 함.
  * @apiParamExample {FormData} User Action:
  * {
  *     "listId": 1,
@@ -43,13 +37,12 @@ router.post("/", upload.array("file"), (req, res, next) => {
     });
 });
 
-// 리스트의 이미지들 가져오기
 /**
- * @api {get} /images/list/:listId Get Images in list
+ * @api {get} /images/list/:listId Get List Images
  * @apiName GetListImages
  * @apiGroup Images
  *
- * @apiParam (path) {Number} ListID
+ * @apiParam (path) {Number} listId listId.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
@@ -76,13 +69,12 @@ router.get("/list/:listId", function(req, res, next) {
     });
 });
 
-// 특정 이미지 가져오기
 /**
- * @api {get} /images/:ImageId Get the Image
+ * @api {get} /images/:imageId Get Image
  * @apiName GetImage
  * @apiGroup Images
  *
- * @apiParam (path) {Number} ImageID
+ * @apiParam (path) {Number} imageId imageId.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
@@ -91,8 +83,8 @@ router.get("/list/:listId", function(req, res, next) {
  *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
  * }
  */
-router.get("/:ImageId", function(req, res, next) {
-  const ImageId = req.params["ImageId"];
+router.get("/:imageId", function(req, res, next) {
+  const ImageId = req.params["imageId"];
 
   image
     .getImage(ImageId)
@@ -104,17 +96,14 @@ router.get("/:ImageId", function(req, res, next) {
     });
 });
 
-// 이미지 수정
 /**
- * @api {put} /imagess/:ImageId Modify Image
+ * @api {put} /images/:imageId Modify Image
  * @apiName ModifyImages
  * @apiGroup Images
- * @apiDescription form data로 post 시 file input의 name=file 이여야 함.
+ * @apiDescription ModifyList 사용 전, 변경 된 이미지에 사용
  *
- * ModifyList 사용 전, 변경 된 이미지에 사용
- *
- * @apiParam (path) {Number} ImageId
- * @apiParam {FormData} body
+ * @apiParam (path) {Number} imageId imageId.
+ * @apiParam {FormData} body form data로 post 시 file input의 name=file 이여야 함.
  *
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
@@ -124,8 +113,8 @@ router.get("/:ImageId", function(req, res, next) {
  *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
  * }
  */
-router.put("/:ImageId", upload.array("file"), async function(req, res, next) {
-  const ImageId = req.params["ImageId"];
+router.put("/:imageId", upload.array("file"), async function(req, res, next) {
+  const ImageId = req.params["imageId"];
   const urls = req.files.map(file => file.location);
 
   await image.getImage(ImageId).then(result => {
@@ -142,18 +131,17 @@ router.put("/:ImageId", upload.array("file"), async function(req, res, next) {
     });
 });
 
-// 이미지 삭제
 /**
  * @api {delete} /images/:imageId Delete Image
  * @apiName DeleteImage
  * @apiGroup Images
  *
- * @apiParam (path) {Number} ImageId
+ * @apiParam (path) {Number} imageId imageId.
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 204 No Content
  */
-router.delete("/:ImageId", async function(req, res, next) {
-  const ImageId = req.params["ImageId"];
+router.delete("/:imageId", async function(req, res, next) {
+  const ImageId = req.params["imageId"];
 
   await image.getImage(ImageId).then(result => {
     deleteS3(result.url);

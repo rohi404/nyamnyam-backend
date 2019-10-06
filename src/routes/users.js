@@ -4,17 +4,11 @@ const user = require("../database/users");
 const authMail = require("../utills/auth-email");
 const { upload, deleteS3 } = require("../utills/multer-s3");
 
-// 이메일 회원가입 - 인증
 /**
  * @api {post} /users/auth Auth User
  * @apiName AuthUser
  * @apiGroup User
- * @apiDescription 하루 500통 limit 있음
- *
- * 잘못된 메일주소일 때 에러 응답 없음
- *
- * 메일이 안올 경우 주소 다시 확인하라는 알림 있어야 할 듯
- *
+ * @apiDescription 하루 500통 limit, 잘못된 메일주소일 때 에러 응답 없음, 메일이 안올 경우 주소 다시 확인하라는 알림 있어야 할 듯
  *
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
@@ -36,14 +30,12 @@ router.post("/auth", authMail, function(req, res, next) {
   res.status(200).json({ email: userEmail, code: authCode });
 });
 
-// 회원가입 - 유저 등록
 /**
  * @api {post} /users Create User
  * @apiName CreateUser
  * @apiGroup User
- * @apiDescription form data로 post 시 file input의 name=file 이여야 함.
  *
- * @apiParam {Json} body body.
+ * @apiParam {FormData} body form data로 post 시 file input의 name=file 이여야 함.
  * @apiParamExample {json} User Action:
  * {
  *     "user_id": "user1",
@@ -94,7 +86,6 @@ router.post("/", upload.single("file"), function(req, res, next) {
     });
 });
 
-// 유저 정보 가져오기
 /**
  * @api {get} /users/userinfo/:userKey Get User
  * @apiName GetUser
@@ -126,7 +117,6 @@ router.get("/userinfo/:userKey", function(req, res, next) {
     });
 });
 
-// 유저 정보 가져오기
 /**
  * @api {get} /users/userid/:userId Get UserKey
  * @apiName GetUserKey
@@ -158,14 +148,13 @@ router.get("/userid/:userId", function(req, res, next) {
     });
 });
 
-// 유저 정보 수정(닉네임, 프로필사진, 배경사진만 가능)
 /**
  * @api {put} /users/:userKey Modify User
  * @apiName ModifyUser
  * @apiGroup User
  *
  * @apiParam (path) {Number} userKey userKey.
- * @apiParam {Json} body body.
+ * @apiParam {FormData} body form data로 post 시 file input의 name=file 이여야 함.
  * @apiParamExample {json} User Action:
  * {
  *     "nickname": "hi",
@@ -200,7 +189,6 @@ router.put("/:userKey", upload.single("file"), function(req, res, next) {
     });
 });
 
-// 회원탈퇴 - 유저 삭제
 /**
  * @api {delete} /users/:userKey Delete User
  * @apiName DeleteUser

@@ -39,7 +39,6 @@ router.post("/", function(req, res, next) {
     });
 });
 
-// 유저 별 폴더 정보 가져오기
 /**
  * @api {get} /members/userfolders/:userKey Get UserFolders
  * @apiName GetUserFolders
