@@ -59,7 +59,7 @@ const getFolderUsers = async function(folderId) {
 };
 
 const getAllUserFolders = async function(userKey, folder) {
-  const [folderResult] = await getUserFolders(userKey, folder);
+  const folderResult = await getUserFolders(userKey, folder);
 
   if (folderResult.length == 0) {
     throw createError(404, `There is no folders with user Id is ${userKey};`);
@@ -68,6 +68,7 @@ const getAllUserFolders = async function(userKey, folder) {
   let memberResult = [];
   for (let i = 0; i < folderResult.length; i++) {
     let tmp = await getFolderUsers(folderResult[i]["folderId"]);
+
     memberResult.push(folderResult[i]);
     memberResult[i]["count"] = tmp.length;
     memberResult[i]["member"] = tmp;
