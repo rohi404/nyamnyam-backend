@@ -174,7 +174,7 @@ router.get("/userid/:userId", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.post("/:userKey", upload.single("file"), function(req, res, next) {
+router.put("/:userKey", upload.single("file"), function(req, res, next) {
   const url = req.file ? req.file.location : undefined;
   const userKey = req.params["userKey"];
   user
