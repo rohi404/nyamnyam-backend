@@ -16,8 +16,8 @@ const createList = async function(folderId, name, location, memo, image) {
   const [memberResult] = await pool.execute(sql3);
 
   for (let i = 0; i < memberResult.length; i++) {
-    let userKey = members.convertToMember(memberResult[i])["userKey"];
-    let sql = checks.createCheck(userKey, listId);
+    let userKey = await members.convertToMember(memberResult[i])["userKey"];
+    let sql = await checks.createCheck(userKey, listId);
   }
 
   return await getList(listId);
