@@ -97,7 +97,7 @@ router.get("/:imageId", function(req, res, next) {
 });
 
 /**
- * @api {put} /images/:imageId Modify Image
+ * @api {post} /images/:imageId Modify Image
  * @apiName ModifyImages
  * @apiGroup Images
  * @apiDescription ModifyList 사용 전, 변경 된 이미지에 사용

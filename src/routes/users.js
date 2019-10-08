@@ -149,7 +149,7 @@ router.get("/userid/:userId", function(req, res, next) {
 });
 
 /**
- * @api {put} /users/:userKey Modify User
+ * @api {post} /users/:userKey Modify User
  * @apiName ModifyUser
  * @apiGroup User
  *
@@ -175,10 +175,8 @@ router.get("/userid/:userId", function(req, res, next) {
  * }
  */
 router.put("/:userKey", upload.single("file"), function(req, res, next) {
-  const userKey = req.params["userKey"];
-
   const url = req.file ? req.file.location : undefined;
-
+  const userKey = req.params["userKey"];
   user
     .modifyUser(userKey, req.body["nickname"], url, req.body["background"])
     .then(result => {
