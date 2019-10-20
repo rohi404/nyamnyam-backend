@@ -185,7 +185,7 @@ router.get("/folderlists/:folderId", function(req, res, next) {
 router.put("/:listId", async function(req, res, next) {
   const listId = req.params["listId"];
   const images = await image.getListImage(listId);
-  const listImage = !images ? "default-image" : images[0].url;
+  const listImage = images.length == 0 ? "default-image" : images[0].url;
 
   list
     .modifyList(
@@ -218,20 +218,21 @@ router.put("/:listId", async function(req, res, next) {
 router.delete("/:listId", async function(req, res, next) {
   const listId = req.params["listId"];
   const images = await image.getListImage(listId);
-
   list
     .deleteList(listId)
     .then(() => {
-      images.forEach(result => {
-        image
-          .deleteImage(result.imageId)
-          .then(() => {
-            deleteS3(result.url);
-          })
-          .catch(err => {
-            next(err);
-          });
-      });
+      if (images.length > 0) {
+        images.forEach(result => {
+          image
+            .deleteImage(result.imageId)
+            .then(() => {
+              deleteS3(result.url);
+            })
+            .catch(err => {
+              next(err);
+            });
+        });
+      }
       res.status(204).end();
     })
     .catch(err => {

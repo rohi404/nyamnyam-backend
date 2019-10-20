@@ -29,10 +29,6 @@ const getListImage = async function(listId) {
   const sql = `SELECT * FROM Images WHERE list_id = ${listId};`;
   const [imageResult] = await pool.execute(sql);
 
-  if (imageResult.length == 0) {
-    throw createError(404, `There is no images with list Id is ${listId};`);
-  }
-
   const result = [];
   for (let i = 0; i < imageResult.length; i++) {
     let tmp = images.convertToImage(imageResult[i]);
