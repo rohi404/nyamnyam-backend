@@ -69,7 +69,7 @@ router.get("/checkinfo/:checkId", function(req, res, next) {
 });
 
 /**
- * @api {get} /users/listusers/:listId Get List Users
+ * @api {get} /checks/listusers/:listId Get List Users
  * @apiName GetListUsers
  * @apiGroup Check
  *
