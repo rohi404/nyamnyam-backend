@@ -39,7 +39,6 @@ const getListUser = async function(userKey, listId) {
 };
 
 const getListUsers = async function(listId) {
-  const conn = database.createConnection();
   const sql = `SELECT * FROM Checks WHERE list_id = ${listId}`;
   const [checkResult] = await pool.execute(sql);
 
