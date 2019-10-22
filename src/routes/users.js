@@ -190,7 +190,7 @@ router.put("/:userKey", upload.single("file"), function(req, res, next) {
 /**
  * @api {delete} /users/:userKey Delete User
  * @apiName DeleteUser
- * @apiGroup Userg
+ * @apiGroup User
  *
  * @apiParam (path) {Number} userKey userKey.
  * @apiSuccessExample {json} Success:
