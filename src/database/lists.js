@@ -60,10 +60,8 @@ const modifyList = async function(
   likeCount,
   listVisited
 ) {
-  const res = await getList(listId);
+  const users = await checks.getListUsers(listId);
   const queries = [];
-  const want_count = res["want_count"];
-  const like_count = res["like_count"];
 
   if (listName != undefined) {
     queries.push(`name=\'${listName}\'`);
@@ -83,18 +81,22 @@ const modifyList = async function(
   // wantCount, likeCount 입력이 1이면 카운트수 증가 0이면 카운트수 감소
   if (wantCount != undefined) {
     if (wantCount === 1) {
-      queries.push(`want_count=\'${want_count + 1}\'`);
-    }
-    if (wantCount === 0) {
-      queries.push(`want_count=\'${want_count - 1}\'`);
+      let count = 0;
+      let i;
+      for (i = 0; i < users.length; i++) {
+        count += users[i]["wantCheck"];
+      }
+      queries.push(`want_count=\'${count}\'`);
     }
   }
   if (likeCount != undefined) {
     if (likeCount === 1) {
-      queries.push(`like_count=\'${like_count + 1}\'`);
-    }
-    if (likeCount === 0) {
-      queries.push(`like_count=\'${like_count - 1}\'`);
+      let count = 0;
+      let i;
+      for (i = 0; i < users.length; i++) {
+        count += users[i]["likeCheck"];
+      }
+      queries.push(`like_count=\'${count}\'`);
     }
   }
 

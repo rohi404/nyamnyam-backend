@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const folder = require("../database/folders");
+const list = require("../database/lists");
 
 /**
  * @api {post} /folders Create Folder
@@ -67,8 +68,12 @@ router.get("/:folderId", function(req, res, next) {
 
   folder
     .getFolder(folderId)
-    .then(user => {
-      res.status(200).json(user);
+    .then(folder => {
+      const { folderId } = folder;
+      list.getFolderLists(folderId).then(result => {
+        folder.listCount = result.length;
+        res.status(200).json(folder);
+      });
     })
     .catch(err => {
       next(err);
@@ -113,7 +118,7 @@ router.put("/:folderId", function(req, res, next) {
       req.body["emoji"],
       req.body["color"],
       req.body["leader"],
-      req.body["link"],
+      req.body["link"]
     )
     .then(result => {
       res.status(200).json(result);

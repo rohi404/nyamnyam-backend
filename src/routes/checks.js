@@ -125,8 +125,6 @@ router.get("/listuser/:userKey/:listId", function(req, res, next) {
   const listId = req.params["listId"];
   const userKey = req.params["userKey"];
 
-  console.log(listId, userKey);
-
   check
     .getListUser(userKey, listId)
     .then(user => {

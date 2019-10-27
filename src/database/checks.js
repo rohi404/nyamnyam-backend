@@ -75,11 +75,11 @@ const modifyCheck = async function(userKey, listId, want, like, lists) {
     undefined,
     undefined,
     undefined,
-    want,
-    like
+    1,
+    1
   );
 
-  return await getListUser(userId, listId);
+  return await getListUser(userKey, listId);
 };
 
 const deleteCheck = async function(userKey, listId) {

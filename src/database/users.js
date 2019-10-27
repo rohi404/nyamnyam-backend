@@ -17,7 +17,7 @@ const createUser = async function(
 
   const sql2 = `SELECT LAST_INSERT_ID() AS user_key;`;
   const [result2] = await pool.execute(sql2);
-  console.log(result2);
+
   const userKey = result2[0]["user_key"];
   return await getUser(userKey);
 };
