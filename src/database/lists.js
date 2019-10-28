@@ -7,10 +7,7 @@ const members = require("../model/members");
 const createList = async function(folderId, name, location, memo, image) {
   const sql1 = `INSERT INTO Lists (folder_id, name, location, memo, image) VALUES ('${folderId}', '${name}', '${location}', '${memo}', '${image}');`;
   const result = await pool.execute(sql1);
-
-  const sql2 = `SELECT LAST_INSERT_ID() AS list_id;`;
-  const [rows] = await pool.execute(sql2);
-  const listId = rows[0]["list_id"];
+  const listId = result[0].insertId;
 
   const sql3 = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
   const [memberResult] = await pool.execute(sql3);

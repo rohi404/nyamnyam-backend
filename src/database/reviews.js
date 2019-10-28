@@ -6,10 +6,7 @@ const createReview = async function(userKey, listId, content, image) {
   const sql1 = `INSERT INTO Reviews (user_key, list_id, content, image) VALUES ('${userKey}', '${listId}', '${content}', '${image}');`;
   const result = await pool.execute(sql1);
 
-  const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
-  const [result2] = await pool.execute(sql2);
-
-  const reviewId = result2[0]["id"];
+  const reviewId = result[0].insertId;
   return await getReview(reviewId);
 };
 

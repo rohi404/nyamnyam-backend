@@ -3,14 +3,12 @@ const pool = require("./database");
 const images = require("../model/images");
 
 const createImage = async function(listId, url) {
+  let result;
   for (let i = 0; i < url.length; i++) {
     let sql1 = `INSERT INTO Images (list_id, url) VALUES ('${listId}', '${url[i]}');`;
-    let result = await pool.execute(sql1);
+    result = await pool.execute(sql1);
   }
-  const sql2 = `SELECT LAST_INSERT_ID() AS image_id;`;
-  const [result2] = await pool.execute(sql2);
-
-  const imageId = result2[0]["image_id"];
+  const imageId = result[0].insertId;
   return await getImage(imageId);
 };
 

@@ -5,11 +5,7 @@ const checks = require("../model/checks");
 const createCheck = async function(userKey, listId) {
   const sql1 = `INSERT INTO Checks (user_key, list_id) VALUES ('${userKey}', '${listId}');`;
   const result = await pool.execute(sql1);
-
-  const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
-  const [result2] = await pool.execute(sql2);
-
-  const checkId = result2[0]["id"];
+  const checkId = result[0].insertId;
   return await getCheck(checkId);
 };
 

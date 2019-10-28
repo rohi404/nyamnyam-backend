@@ -11,10 +11,7 @@ const createMember = async function(userKey, folderId) {
     const sql1 = `INSERT INTO Members (user_key, folder_id) VALUES ('${userKey}', '${folderId}')`;
     const result = await pool.execute(sql1);
 
-    const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
-    const [result2] = await pool.execute(sql2);
-
-    const memberId = result2[0]["id"];
+    const memberId = result[0].insertId;
     return await getMember(memberId);
   } else {
     return member;
