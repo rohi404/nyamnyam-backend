@@ -7,7 +7,8 @@ const poolDB = mysql.createPool({
   password: process.env.RDS_PW,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  multipleStatements: true
 });
 
 const pool = poolDB.promise();

@@ -6,14 +6,11 @@ const members = require("./members");
 const createFolder = async function(leader, name, emoji, color) {
   const sql1 = `INSERT INTO Folders (leader, name, emoji, color) VALUES ('${leader}', '${name}', '${emoji}', '${color}');`;
   const result = await pool.execute(sql1);
-
-  const sql2 = `SELECT LAST_INSERT_ID() AS folder_id;`;
-  const [result2] = await pool.execute(sql2);
-  const folderId = result2[0]["folder_id"];
-
+  const folderId = result[0].insertId;
   const result3 = members.createMember(leader, folderId);
 
   return await getFolder(folderId);
+  å;
 };
 
 const getFolder = async function(folderId) {

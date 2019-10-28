@@ -5,11 +5,7 @@ const checks = require("../model/checks");
 const createCheck = async function(userKey, listId) {
   const sql1 = `INSERT INTO Checks (user_key, list_id) VALUES ('${userKey}', '${listId}');`;
   const result = await pool.execute(sql1);
-
-  const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
-  const [result2] = await pool.execute(sql2);
-
-  const checkId = result2[0]["id"];
+  const checkId = result[0].insertId;
   return await getCheck(checkId);
 };
 
@@ -39,7 +35,6 @@ const getListUser = async function(userKey, listId) {
 };
 
 const getListUsers = async function(listId) {
-  const conn = database.createConnection();
   const sql = `SELECT * FROM Checks WHERE list_id = ${listId}`;
   const [checkResult] = await pool.execute(sql);
 
@@ -76,11 +71,11 @@ const modifyCheck = async function(userKey, listId, want, like, lists) {
     undefined,
     undefined,
     undefined,
-    want,
-    like
+    1,
+    1
   );
 
-  return await getListUser(userId, listId);
+  return await getListUser(userKey, listId);
 };
 
 const deleteCheck = async function(userKey, listId) {

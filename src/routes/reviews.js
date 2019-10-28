@@ -104,7 +104,6 @@ router.get("/reviewinfo/:reviewId", function(req, res, next) {
  */
 router.get("/listreviews/:listId", function(req, res, next) {
   const listId = req.params["listId"];
-  console.log(listId);
 
   review
     .getListReviews(listId)

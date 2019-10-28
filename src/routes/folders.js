@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const folder = require("../database/folders");
+const list = require("../database/lists");
 
 /**
  * @api {post} /folders Create Folder
@@ -59,16 +60,20 @@ router.post("/", function(req, res, next) {
  *     "emoji": "013",
  *     "color": "#ffffff",
  *     "link": "http://nyamnyam",
- *     "reg_date": "2018-11-24 14:52:30"
+ *     "reg_date": "2018-11-24 14:52:30",
+ *     "listCount":1
  * }
  */
 router.get("/:folderId", function(req, res, next) {
-  const folderId = req.params["folderId"];
+  const id = req.params["folderId"];
 
   folder
-    .getFolder(folderId)
-    .then(user => {
-      res.status(200).json(user);
+    .getFolder(id)
+    .then(folder => {
+      list.getFolderListsCount(id).then(result => {
+        const newFolder = { ...folder, listCount: result };
+        res.status(200).json(newFolder);
+      });
     })
     .catch(err => {
       next(err);
@@ -113,7 +118,7 @@ router.put("/:folderId", function(req, res, next) {
       req.body["emoji"],
       req.body["color"],
       req.body["leader"],
-      req.body["link"],
+      req.body["link"]
     )
     .then(result => {
       res.status(200).json(result);

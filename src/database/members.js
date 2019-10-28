@@ -4,14 +4,18 @@ const members = require("../model/members");
 const user = require("../database/users");
 
 const createMember = async function(userKey, folderId) {
-  const sql1 = `INSERT INTO Members (user_key, folder_id) VALUES ('${userKey}', '${folderId}');`;
-  const result = await pool.execute(sql1);
+  const sql = `SELECT * FROM Members WHERE user_key= ${userKey} AND folder_id=${folderId};`;
+  const [member] = await pool.execute(sql);
 
-  const sql2 = `SELECT LAST_INSERT_ID() AS id;`;
-  const [result2] = await pool.execute(sql2);
+  if (member.length == 0) {
+    const sql1 = `INSERT INTO Members (user_key, folder_id) VALUES ('${userKey}', '${folderId}')`;
+    const result = await pool.execute(sql1);
 
-  const memberId = result2[0]["id"];
-  return await getMember(memberId);
+    const memberId = result[0].insertId;
+    return await getMember(memberId);
+  } else {
+    return member;
+  }
 };
 
 const getMember = async function(memberId) {
