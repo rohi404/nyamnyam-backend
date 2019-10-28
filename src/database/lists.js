@@ -49,6 +49,12 @@ const getFolderLists = async function(folderId) {
 
   return await result;
 };
+const getFolderListsCount = async function(folderId) {
+  const sql = `SELECT * FROM Lists WHERE folder_id = ${folderId}`;
+  const [listResult] = await pool.execute(sql);
+
+  return listResult.length;
+};
 
 const modifyList = async function(
   listId,
@@ -124,6 +130,7 @@ module.exports = {
   createList,
   getList,
   getFolderLists,
+  getFolderListsCount,
   modifyList,
   deleteList
 };

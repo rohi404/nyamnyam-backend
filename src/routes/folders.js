@@ -60,19 +60,19 @@ router.post("/", function(req, res, next) {
  *     "emoji": "013",
  *     "color": "#ffffff",
  *     "link": "http://nyamnyam",
- *     "reg_date": "2018-11-24 14:52:30"
+ *     "reg_date": "2018-11-24 14:52:30",
+ *     "listCount":1
  * }
  */
 router.get("/:folderId", function(req, res, next) {
-  const folderId = req.params["folderId"];
+  const id = req.params["folderId"];
 
   folder
-    .getFolder(folderId)
+    .getFolder(id)
     .then(folder => {
-      const { folderId } = folder;
-      list.getFolderLists(folderId).then(result => {
-        folder.listCount = result.length;
-        res.status(200).json(folder);
+      list.getFolderListsCount(id).then(result => {
+        const newFolder = { ...folder, listCount: result };
+        res.status(200).json(newFolder);
       });
     })
     .catch(err => {
