@@ -4,13 +4,16 @@ const folders = require("../model/folders");
 const members = require("./members");
 
 const createFolder = async function(leader, name, emoji, color) {
-  const sql1 = `INSERT INTO Folders (leader, name, emoji, color) VALUES ('${leader}', '${name}', '${emoji}', '${color}');`;
-  const result = await pool.execute(sql1);
-  const folderId = result[0].insertId;
-  const result3 = members.createMember(leader, folderId);
+  try {
+    const sql1 = `INSERT INTO Folders (leader, name, emoji, color) VALUES ('${leader}', '${name}', '${emoji}', '${color}');`;
+    const result = await pool.execute(sql1);
+    const folderId = result[0].insertId;
+    const result3 = members.createMember(leader, folderId);
 
-  return await getFolder(folderId);
-  å;
+    return await getFolder(folderId);
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 const getFolder = async function(folderId) {
@@ -53,9 +56,14 @@ const modifyFolder = async function(
   const sql = `UPDATE Folders SET ${queries.join(
     ", "
   )} WHERE folder_id = ${folderId};`;
-  const result = await pool.execute(sql);
 
-  return await getFolder(folderId);
+  try {
+    const result = await pool.execute(sql);
+
+    return await getFolder(folderId);
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 const deleteFolder = async function(folderId) {
@@ -63,11 +71,15 @@ const deleteFolder = async function(folderId) {
   const sql2 = `DELETE FROM Lists WHERE folder_id = ${folderId};`;
   const sql3 = `DELETE FROM Members WHERE folder_id = ${folderId};`;
 
-  const result1 = await pool.execute(sql1);
-  const result2 = await pool.execute(sql2);
-  const result3 = await pool.execute(sql3);
+  try {
+    const result1 = await pool.execute(sql1);
+    const result2 = await pool.execute(sql2);
+    const result3 = await pool.execute(sql3);
 
-  return result1;
+    return result1;
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 module.exports = { createFolder, getFolder, modifyFolder, deleteFolder };

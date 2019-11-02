@@ -5,19 +5,23 @@ const lists = require("../model/lists");
 const members = require("../model/members");
 
 const createList = async function(folderId, name, location, memo, image) {
-  const sql1 = `INSERT INTO Lists (folder_id, name, location, memo, image) VALUES ('${folderId}', '${name}', '${location}', '${memo}', '${image}');`;
-  const result = await pool.execute(sql1);
-  const listId = result[0].insertId;
+  try {
+    const sql1 = `INSERT INTO Lists (folder_id, name, location, memo, image) VALUES ('${folderId}', '${name}', '${location}', '${memo}', '${image}');`;
+    const result = await pool.execute(sql1);
+    const listId = result[0].insertId;
 
-  const sql3 = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
-  const [memberResult] = await pool.execute(sql3);
+    const sql3 = `SELECT * FROM Members WHERE folder_id = ${folderId}`;
+    const [memberResult] = await pool.execute(sql3);
 
-  for (let i = 0; i < memberResult.length; i++) {
-    let userKey = await members.convertToMember(memberResult[i])["userKey"];
-    let sql = await checks.createCheck(userKey, listId);
+    for (let i = 0; i < memberResult.length; i++) {
+      let userKey = await members.convertToMember(memberResult[i])["userKey"];
+      let sql = await checks.createCheck(userKey, listId);
+    }
+
+    return await getList(listId);
+  } catch (e) {
+    throw createError(e);
   }
-
-  return await getList(listId);
 };
 
 const getList = async function(listId) {
@@ -47,10 +51,14 @@ const getFolderLists = async function(folderId) {
   return await result;
 };
 const getFolderListsCount = async function(folderId) {
-  const sql = `SELECT * FROM Lists WHERE folder_id = ${folderId}`;
-  const [listResult] = await pool.execute(sql);
+  try {
+    const sql = `SELECT * FROM Lists WHERE folder_id = ${folderId}`;
+    const [listResult] = await pool.execute(sql);
 
-  return listResult.length;
+    return listResult.length;
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 const modifyList = async function(
@@ -106,9 +114,14 @@ const modifyList = async function(
   const sql = `UPDATE Lists SET ${queries.join(
     ", "
   )} WHERE list_id = ${listId};`;
-  const result = await pool.execute(sql);
 
-  return await getList(listId);
+  try {
+    const result = await pool.execute(sql);
+
+    return await getList(listId);
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 const deleteList = async function(listId) {
@@ -116,11 +129,15 @@ const deleteList = async function(listId) {
   const sql2 = `DELETE FROM Reviews WHERE list_id = ${listId};`;
   const sql3 = `DELETE FROM Checks WHERE list_id = ${listId};`;
 
-  const result1 = await pool.execute(sql1);
-  const result2 = await pool.execute(sql2);
-  const result3 = await pool.execute(sql3);
+  try {
+    const result1 = await pool.execute(sql1);
+    const result2 = await pool.execute(sql2);
+    const result3 = await pool.execute(sql3);
 
-  return result1;
+    return result1;
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 module.exports = {
