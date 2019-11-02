@@ -25,30 +25,38 @@ const createList = async function(folderId, name, location, memo, image) {
 };
 
 const getList = async function(listId) {
-  const sql = `SELECT * FROM Lists WHERE list_id = ${listId}`;
-  const [listResult] = await pool.execute(sql);
+  try {
+    const sql = `SELECT * FROM Lists WHERE list_id = ${listId}`;
+    const [listResult] = await pool.execute(sql);
 
-  if (listResult.length == 0) {
-    throw createError(404, `There is no list with list Id is ${listId}`);
+    if (listResult.length == 0) {
+      throw createError(404, `There is no list with list Id is ${listId}`);
+    }
+
+    return await lists.convertToList(listResult[0]);
+  } catch (e) {
+    throw createError(e);
   }
-
-  return await lists.convertToList(listResult[0]);
 };
 
 const getFolderLists = async function(folderId) {
-  const sql = `SELECT * FROM Lists WHERE folder_id = ${folderId}`;
-  const [listResult] = await pool.execute(sql);
+  try {
+    const sql = `SELECT * FROM Lists WHERE folder_id = ${folderId}`;
+    const [listResult] = await pool.execute(sql);
 
-  if (listResult.length == 0) {
-    throw createError(404, `There is no list with folder Id is ${folderId}`);
+    if (listResult.length == 0) {
+      throw createError(404, `There is no list with folder Id is ${folderId}`);
+    }
+
+    const result = [];
+    for (let i = 0; i < listResult.length; i++) {
+      result.push(lists.convertToList(listResult[i]));
+    }
+
+    return await result;
+  } catch (e) {
+    throw createError(e);
   }
-
-  const result = [];
-  for (let i = 0; i < listResult.length; i++) {
-    result.push(lists.convertToList(listResult[i]));
-  }
-
-  return await result;
 };
 const getFolderListsCount = async function(folderId) {
   try {
@@ -61,7 +69,16 @@ const getFolderListsCount = async function(folderId) {
   }
 };
 
-const modifyList = async function(listId, listName, listLocation, listMemo, listImage, wantCount, likeCount, listVisited) {
+const modifyList = async function(
+  listId,
+  listName,
+  listLocation,
+  listMemo,
+  listImage,
+  wantCount,
+  likeCount,
+  listVisited
+) {
   const users = await checks.getListUsers(listId);
   const queries = [];
 

@@ -103,13 +103,18 @@ router.get("/:imageId", function(req, res, next) {
 });
 
 /**
- * @api {put} /images/:imageId Modify Image
+ * @api {put} /images Modify Image
  * @apiName ModifyImages
  * @apiGroup Images
- * @apiDescription ModifyList 사용 전, 이미지를 변경할 때 사용(삭제하지 않고 바꿀때)
+ * @apiDescription ModifyList 사용 전, 이미지를 변경할 때 사용
  *
  * @apiParam (path) {Number} imageId imageId.
  * @apiParam {FormData} body form data로 post 시 file input의 name=file 이여야 함.
+ * @apiParamExample {FormData} User Action:
+ * {
+ *     "imageId": 1,
+ *     "file": "aaaaa",
+ * }
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
@@ -119,8 +124,8 @@ router.get("/:imageId", function(req, res, next) {
  *     "order":0
  * }
  */
-router.put("/:imageId", upload.single("file"), async function(req, res, next) {
-  const ImageId = req.params["imageId"];
+router.put("/", upload.single("file"), async function(req, res, next) {
+  const ImageId = req.body["imageId"];
   const url = req.file.location;
 
   await image.getImage(ImageId).then(result => {

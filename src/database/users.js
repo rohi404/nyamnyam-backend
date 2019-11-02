@@ -26,25 +26,33 @@ const createUser = async function(
 };
 
 const getUser = async function(userKey) {
-  const sql = `SELECT * FROM Users WHERE user_key = ${userKey}`;
-  const [userResult] = await pool.execute(sql);
+  try {
+    const sql = `SELECT * FROM Users WHERE user_key = ${userKey}`;
+    const [userResult] = await pool.execute(sql);
 
-  if (userResult.length == 0) {
-    throw createError(404, `There is no users with user key is ${userKey}`);
+    if (userResult.length == 0) {
+      throw createError(404, `There is no users with user key is ${userKey}`);
+    }
+
+    return await users.convertToUser(userResult[0]);
+  } catch (e) {
+    throw createError(e);
   }
-
-  return await users.convertToUser(userResult[0]);
 };
 
 const getUserId = async function(Id) {
-  const sql = `SELECT * FROM Users WHERE user_id = '${Id}'`;
-  const [userResult] = await pool.execute(sql);
+  try {
+    const sql = `SELECT * FROM Users WHERE user_id = '${Id}'`;
+    const [userResult] = await pool.execute(sql);
 
-  if (userResult.length == 0) {
-    throw createError(404, `There is no users with user id is ${Id}`);
+    if (userResult.length == 0) {
+      throw createError(404, `There is no users with user id is ${Id}`);
+    }
+
+    return await users.convertToUser(userResult[0]);
+  } catch (e) {
+    throw createError(e);
   }
-
-  return await users.convertToUser(userResult[0]);
 };
 
 const modifyUser = async function(

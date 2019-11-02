@@ -17,14 +17,21 @@ const createFolder = async function(leader, name, emoji, color) {
 };
 
 const getFolder = async function(folderId) {
-  const sql = `SELECT * FROM Folders WHERE folder_id = ${folderId}`;
-  const [folderResult] = await pool.execute(sql);
+  try {
+    const sql = `SELECT * FROM Folders WHERE folder_id = ${folderId}`;
+    const [folderResult] = await pool.execute(sql);
 
-  if (folderResult.length == 0) {
-    throw createError(404, `There is no folders with folder Id is ${folderId}`);
+    if (folderResult.length == 0) {
+      throw createError(
+        404,
+        `There is no folders with folder Id is ${folderId}`
+      );
+    }
+
+    return await folders.convertToFolder(folderResult[0]);
+  } catch (e) {
+    throw createError(e);
   }
-
-  return await folders.convertToFolder(folderResult[0]);
 };
 
 const modifyFolder = async function(
