@@ -7,28 +7,31 @@ const { upload, deleteS3 } = require("../utills/multer-s3");
  * @api {post} /images Upload Image
  * @apiName UploadImage
  * @apiGroup Images
- * @apiDescription ModifyList 사용 전, 새로 추가된 이미지에 사용
+ * @apiDescription ModifyList 사용 전, 이미지 새로 추가할때 사용, order 0번이 대표이미지
  *
  * @apiParam {FormData} body form data로 post 시 file input의 name=file 이여야 함.
  * @apiParamExample {FormData} User Action:
  * {
  *     "listId": 1,
  *     "file": "aaaaa",
+ *     "order":0
  * }
  * @apiSuccessExample {json} Success
  * HTTP/1.1 200 OK
  * {
  *     "imageId": 4,
  *     "listId": 1,
- *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
+ *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws.",
+ *     "order":0
  * }
  */
-router.post("/", upload.array("file"), (req, res, next) => {
+router.post("/", upload.single("file"), (req, res, next) => {
   const listId = req.body["listId"];
-  const urls = req.files.map(file => file.location);
+  const order = req.body["order"];
+  const url = req.file.location;
 
   image
-    .createImage(listId, urls)
+    .createImage(listId, url, order)
     .then(image => {
       res.status(200).json(image);
     })
@@ -48,12 +51,14 @@ router.post("/", upload.array("file"), (req, res, next) => {
  * {
  *     "imageId": 2,
  *     "listId": 1,
- *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
+ *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws.",
+ *     "order":0
  * },
  * {
  *     "imageId": 3,
  *     "listId": 1,
- *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
+ *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws.",
+ *     "order":0
  * }
  */
 router.get("/list/:listId", function(req, res, next) {
@@ -81,6 +86,7 @@ router.get("/list/:listId", function(req, res, next) {
  *     "imageId": 3,
  *     "listId": 1,
  *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
+ *     "order":0
  * }
  */
 router.get("/:imageId", function(req, res, next) {
@@ -100,29 +106,29 @@ router.get("/:imageId", function(req, res, next) {
  * @api {put} /images/:imageId Modify Image
  * @apiName ModifyImages
  * @apiGroup Images
- * @apiDescription ModifyList 사용 전, 변경 된 이미지에 사용
+ * @apiDescription ModifyList 사용 전, 이미지를 변경할 때 사용(삭제하지 않고 바꿀때)
  *
  * @apiParam (path) {Number} imageId imageId.
  * @apiParam {FormData} body form data로 post 시 file input의 name=file 이여야 함.
- *
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
  *     "imageId": 4,
  *     "listId": 1,
- *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws."
+ *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws.",
+ *     "order":0
  * }
  */
-router.put("/:imageId", upload.array("file"), async function(req, res, next) {
+router.put("/:imageId", upload.single("file"), async function(req, res, next) {
   const ImageId = req.params["imageId"];
-  const urls = req.files.map(file => file.location);
+  const url = req.file.location;
 
   await image.getImage(ImageId).then(result => {
     deleteS3(result.url);
   });
 
   image
-    .modifyImage(ImageId, urls[0])
+    .modifyImage(ImageId, url)
     .then(result => {
       res.status(200).json(result);
     })

@@ -16,7 +16,8 @@ const { upload, deleteS3 } = require("../utills/multer-s3");
  *     "folder_id": 2
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
- *     "file" : "aaaa.png"
+ *     "file" : "aaaa.png",
+ *     "file" : "bb.png",
  * }
  *
  * @apiSuccessExample {json} Success:
@@ -50,7 +51,7 @@ router.post("/", upload.array("file"), function(req, res, next) {
     .then(list => {
       if (files) {
         image
-          .createImage(list.listId, urls)
+          .createAllImages(list.listId, urls)
           .then(() => {
             res.status(200).json(list);
           })
@@ -188,7 +189,7 @@ router.put("/:listId", async function(req, res, next) {
   const listImage =
     images.length == 0
       ? "default-image"
-      : images.filter(img => img.order === 0);
+      : images.filter(img => img.order === 0)[0];
 
   list
     .modifyList(

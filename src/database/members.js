@@ -14,7 +14,7 @@ const createMember = async function(userKey, folderId) {
     const memberId = result[0].insertId;
     return await getMember(memberId);
   } else {
-    return null;
+    throw createError(404, `There is already member with user Id is ${userKey} and folder Id is ${folderId};`);
   }
 };
 
@@ -23,7 +23,7 @@ const getMember = async function(memberId) {
   const [memberResult] = await pool.execute(sql);
 
   if (memberResult.length == 0) {
-    throw createError(404, `There is no users with user Id is ${memberId};`);
+    throw createError(404, `There is no users with member Id is ${memberId};`);
   }
 
   return await members.convertToMember(memberResult[0]);

@@ -2,7 +2,14 @@ const createError = require("http-errors");
 const pool = require("./database");
 const users = require("../model/users");
 
-const createUser = async function(userId, password, nickname, email, image, background) {
+const createUser = async function(
+  userId,
+  password,
+  nickname,
+  email,
+  image,
+  background
+) {
   try {
     const sqlwithImg = `INSERT INTO Users (user_id, password, nickname, email, image, background ) VALUES ('${userId}', '${password}', '${nickname}', '${email}', '${image}', '${background}' );`;
     const sqlwithoutImg = `INSERT INTO Users (user_id, password, nickname, email, background ) VALUES ('${userId}', '${password}', '${nickname}', '${email}', '${background}' );`;
@@ -72,11 +79,9 @@ const modifyUser = async function(
 };
 
 const deleteUser = async function(userKey) {
-  const sql1 = `DELETE FROM Users WHERE user_key = ${userKey};`;
-
   try {
+    const sql1 = `DELETE FROM Users WHERE user_key = ${userKey};`;
     const result1 = await pool.execute(sql1);
-
     return result1;
   } catch (e) {
     throw createError(e);
