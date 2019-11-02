@@ -56,7 +56,8 @@ router.post("/", function(req, res, next) {
  *     "emoji": "013",
  *     "color": "#ffffff",
  *     "link": "http://nyamnyam",
- *     "reg_date": "2018-11-24 14:52:30"
+ *     "reg_date": "2018-11-24 14:52:30",
+ *     "listCount": 2
  *  },
  *  {
  *     "folderId": 2,
@@ -65,7 +66,8 @@ router.post("/", function(req, res, next) {
  *     "emoji": "012",
  *     "color": "#000000",
  *     "link": "http://nyamnyam/2",
- *     "reg_date": "2018-11-30 13:22:10"
+ *     "reg_date": "2018-11-30 13:22:10",
+ *     "listCount": 3
  *  }
  * ]
  */
@@ -147,6 +149,7 @@ router.get("/folderusers/:folderId", function(req, res, next) {
  *     "color": "#ffffff",
  *     "link": "http://nyamnyam",
  *     "reg_date": "2018-11-24 14:52:30",
+ *     "listCount": 2
  *     "count": 2,
  *     "member": [
  *       {
@@ -180,6 +183,7 @@ router.get("/folderusers/:folderId", function(req, res, next) {
  *     "link": "http://nyamnyam/2",
  *     "reg_date": "2018-11-30 13:22:10",
  *     "count": 1,
+ *     "listCount": 9
  *     "member": [
  *       {
  *         "userKey": 1,

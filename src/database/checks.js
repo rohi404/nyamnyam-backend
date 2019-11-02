@@ -3,10 +3,11 @@ const pool = require("./database");
 const checks = require("../model/checks");
 
 const createCheck = async function(userKey, listId) {
-  const sql1 = `INSERT INTO Checks (user_key, list_id) VALUES ('${userKey}', '${listId}');`;
   try {
+    const sql1 = `INSERT INTO Checks (user_key, list_id) VALUES ('${userKey}', '${listId}');`;
     const result = await pool.execute(sql1);
     const checkId = result[0].insertId;
+
     return await getCheck(checkId);
   } catch (e) {
     throw createError(e);
@@ -25,11 +26,12 @@ const getCheck = async function(checkId) {
 };
 
 const checkListUser = async function(userKey, listId) {
-  const sql = `SELECT * FROM Checks WHERE list_id = ${listId} AND user_key = ${userKey}`;
-
   try {
+    const sql = `SELECT * FROM Checks WHERE list_id = ${listId} AND user_key = ${userKey}`;
     const [checkResult] = await pool.execute(sql);
+
     if (checkResult.length == 0) return null;
+
     return await checks.convertToCheck(checkResult[0]);
   } catch (e) {
     throw createError(e);
@@ -39,11 +41,9 @@ const checkListUser = async function(userKey, listId) {
 const getListUser = async function(userKey, listId) {
   const sql = `SELECT * FROM Checks WHERE list_id = ${listId} AND user_key = ${userKey}`;
   const [checkResult] = await pool.execute(sql);
+
   if (checkResult.length == 0) {
-    throw createError(
-      404,
-      `There is no users with list Id is ${listId} and user Key is ${userKey}`
-    );
+    throw createError(404, `There is no users with list Id is ${listId} and user Key is ${userKey}`);
   }
 
   return await checks.convertToCheck(checkResult[0]);
@@ -79,26 +79,34 @@ const modifyCheck = async function(userKey, listId, want, like, lists) {
   const sql = `UPDATE Checks SET ${queries.join(
     ", "
   )} WHERE user_key = ${userKey} AND list_id = ${listId};`;
-  const result = await pool.execute(sql);
-  const result2 = await lists.modifyList(
-    listId,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    1,
-    1
-  );
 
-  return await getListUser(userKey, listId);
+  try {
+    const result = await pool.execute(sql);
+    const result2 = await lists.modifyList(
+      listId,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      1,
+      1
+    );
+
+    return await getListUser(userKey, listId);
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 const deleteCheck = async function(userKey, listId) {
-  const sql1 = `DELETE FROM Checks WHERE user_key = ${userKey} AND list_id = ${listId};`;
+  try {
+    const sql1 = `DELETE FROM Checks WHERE user_key = ${userKey} AND list_id = ${listId};`;
+    const result1 = await pool.execute(sql1);
 
-  const result1 = await pool.execute(sql1);
-
-  return result1;
+    return result1;
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 module.exports = {
