@@ -24,11 +24,15 @@
     "nodemailer": "^6.3.0",
     "nodemailer-smtp-transport": "^2.7.4",
     "pug": "^2.0.4",
+    "swagger-ui": "^3.24.0",
     "uuid": "^3.3.3"
   },
   "description": "🍰Food Bucket List",
   "main": "index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.1.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aereeeee/nyamnyam-backend.git"

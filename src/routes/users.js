@@ -42,7 +42,7 @@ router.post("/auth", authMail, function(req, res, next) {
  *     "password": "qwerty",
  *     "nickname": "hello",
  *     "email": "user1@gmail.com",
- *     "image": "image1",
+ *     "file": "image1",
  *     "background": "#fffff"
  * }
  *
@@ -158,7 +158,7 @@ router.get("/userid/:userId", function(req, res, next) {
  * @apiParamExample {json} User Action:
  * {
  *     "nickname": "hi",
- *     "image": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/3.png"
+ *     "file": "https://nyamnyam.s3.ap-northeast-2.amazonaws.com/images/3.png"
  *     "background": "#fffff"
  * }
  *
@@ -198,6 +198,15 @@ router.put("/:userKey", upload.single("file"), function(req, res, next) {
  */
 router.delete("/:userKey", function(req, res, next) {
   const userKey = req.params["userKey"];
+
+  user
+    .getUser(userKey)
+    .then( result => {
+      deleteS3(result["image"]);
+    })
+    .catch(err => {
+      next(err);
+    });
 
   user
     .deleteUser(userKey)
