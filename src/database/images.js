@@ -4,12 +4,17 @@ const images = require("../model/images");
 
 const createImage = async function(listId, url) {
   let result;
-  for (let i = 0; i < url.length; i++) {
-    let sql1 = `INSERT INTO Images (list_id, url, order) VALUES ('${listId}', '${url[i]}', '${i}');`;
-    result = await pool.execute(sql1);
+  try {
+    for (let i = 0; i < url.length; i++) {
+      let sql1 = `INSERT INTO Images (list_id, url) VALUES ('${listId}', '${url[i]}');`;
+      result = await pool.execute(sql1);
+    }
+    const imageId = result[0].insertId;
+
+    return await getImage(imageId);
+  } catch (e) {
+    throw createError(e);
   }
-  const imageId = result[0].insertId;
-  return await getImage(imageId);
 };
 
 const getImage = async function(imageId) {
@@ -49,17 +54,25 @@ const modifyImage = async function(imageId, url, order) {
   const sql = `UPDATE Images SET ${queries.join(
     ", "
   )} WHERE image_id = ${imageId};`;
-  const result = await pool.execute(sql);
 
-  return await getImage(imageId);
+  try {
+    const result = await pool.execute(sql);
+
+    return await getImage(imageId);
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 const deleteImage = async function(imageId) {
-  const sql1 = `DELETE FROM Images WHERE image_id = ${imageId};`;
+  try {
+    const sql1 = `DELETE FROM Images WHERE image_id = ${imageId};`;
+    const [result1] = await pool.execute(sql1);
 
-  const [result1] = await pool.execute(sql1);
-
-  return result1;
+    return result1;
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 module.exports = {

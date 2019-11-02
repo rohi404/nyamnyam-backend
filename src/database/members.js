@@ -14,7 +14,7 @@ const createMember = async function(userKey, folderId) {
     const memberId = result[0].insertId;
     return await getMember(memberId);
   } else {
-    return null;
+    throw createError(404, `There is already member with user Id is ${userKey} and folder Id is ${folderId};`);
   }
 };
 
@@ -23,7 +23,7 @@ const getMember = async function(memberId) {
   const [memberResult] = await pool.execute(sql);
 
   if (memberResult.length == 0) {
-    throw createError(404, `There is no users with user Id is ${memberId};`);
+    throw createError(404, `There is no users with member Id is ${memberId};`);
   }
 
   return await members.convertToMember(memberResult[0]);
@@ -31,11 +31,12 @@ const getMember = async function(memberId) {
 
 const getUserFolders = async (userKey, folder) => {
   const sql = `SELECT * FROM Members WHERE user_key = ${userKey}`;
-
   const [memberResult] = await pool.execute(sql);
+
   if (memberResult.length == 0) {
     throw createError(404, `There is no users with user Id is ${userKey};`);
   }
+
   const result = [];
   for (let i = 0; i < memberResult.length; i++) {
     let name = members.convertToMember(memberResult[i])["folderId"];
@@ -82,11 +83,14 @@ const getAllUserFolders = async function(userKey, folder) {
 };
 
 const deleteMember = async function(userKey, folderId) {
-  const sql1 = `DELETE FROM Members WHERE user_key = ${userKey} AND folder_id = ${folderId};`;
+  try {
+    const sql1 = `DELETE FROM Members WHERE user_key = ${userKey} AND folder_id = ${folderId};`;
+    const result1 = await pool.execute(sql1);
 
-  const result1 = await pool.execute(sql1);
-
-  return result1;
+    return result1;
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 module.exports = {
