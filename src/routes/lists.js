@@ -185,7 +185,10 @@ router.get("/folderlists/:folderId", function(req, res, next) {
 router.put("/:listId", async function(req, res, next) {
   const listId = req.params["listId"];
   const images = await image.getListImage(listId);
-  const listImage = images.length == 0 ? "default-image" : images[0].url;
+  const listImage =
+    images.length == 0
+      ? "default-image"
+      : images.filter(img => img.order === 0);
 
   list
     .modifyList(
@@ -193,7 +196,7 @@ router.put("/:listId", async function(req, res, next) {
       req.body["name"],
       req.body["location"],
       req.body["memo"],
-      listImage,
+      listImage["url"],
       req.body["want_count"],
       req.body["like_count"],
       req.body["visited"]

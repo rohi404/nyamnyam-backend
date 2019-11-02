@@ -5,7 +5,7 @@ const images = require("../model/images");
 const createImage = async function(listId, url) {
   let result;
   for (let i = 0; i < url.length; i++) {
-    let sql1 = `INSERT INTO Images (list_id, url) VALUES ('${listId}', '${url[i]}');`;
+    let sql1 = `INSERT INTO Images (list_id, url, order) VALUES ('${listId}', '${url[i]}', '${i}');`;
     result = await pool.execute(sql1);
   }
   const imageId = result[0].insertId;
@@ -36,11 +36,14 @@ const getListImage = async function(listId) {
   return result;
 };
 
-const modifyImage = async function(imageId, url) {
+const modifyImage = async function(imageId, url, order) {
   const queries = [];
 
   if (url != undefined) {
     queries.push(`url=\'${url}\'`);
+  }
+  if (order != undefined) {
+    queries.push(`order=${order}`);
   }
 
   const sql = `UPDATE Images SET ${queries.join(
