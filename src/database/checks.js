@@ -16,13 +16,15 @@ const createCheck = async function(userKey, listId) {
 
 const getCheck = async function(checkId) {
   const sql = `SELECT * FROM Checks WHERE id = ${checkId}`;
-  const [checkResult] = await pool.execute(sql);
-
-  if (checkResult.length == 0) {
-    throw createError(404, `There is no checks with check Id is ${checkId}`);
+  try {
+    const [checkResult] = await pool.execute(sql);
+    if (checkResult.length == 0) {
+      throw createError(404, `There is no checks with check Id is ${checkId}`);
+    }
+    return await checks.convertToCheck(checkResult[0]);
+  } catch (e) {
+    throw createError(e);
   }
-
-  return await checks.convertToCheck(checkResult[0]);
 };
 
 const checkListUser = async function(userKey, listId) {
@@ -40,29 +42,38 @@ const checkListUser = async function(userKey, listId) {
 
 const getListUser = async function(userKey, listId) {
   const sql = `SELECT * FROM Checks WHERE list_id = ${listId} AND user_key = ${userKey}`;
-  const [checkResult] = await pool.execute(sql);
-
-  if (checkResult.length == 0) {
-    throw createError(404, `There is no users with list Id is ${listId} and user Key is ${userKey}`);
+  try {
+    const [checkResult] = await pool.execute(sql);
+    if (checkResult.length == 0) {
+      throw createError(
+        404,
+        `There is no users with list Id is ${listId} and user Key is ${userKey}`
+      );
+    }
+    return await checks.convertToCheck(checkResult[0]);
+  } catch (e) {
+    throw createError(e);
   }
-
-  return await checks.convertToCheck(checkResult[0]);
 };
 
 const getListUsers = async function(listId) {
   const sql = `SELECT * FROM Checks WHERE list_id = ${listId}`;
-  const [checkResult] = await pool.execute(sql);
+  try {
+    const [checkResult] = await pool.execute(sql);
 
-  if (checkResult.length == 0) {
-    throw createError(404, `There is no users with list Id is ${listId}`);
+    if (checkResult.length == 0) {
+      throw createError(404, `There is no users with list Id is ${listId}`);
+    }
+
+    const result = [];
+    for (let i = 0; i < checkResult.length; i++) {
+      result.push(checks.convertToCheck(checkResult[i]));
+    }
+
+    return await result;
+  } catch (e) {
+    throw createError(e);
   }
-
-  const result = [];
-  for (let i = 0; i < checkResult.length; i++) {
-    result.push(checks.convertToCheck(checkResult[i]));
-  }
-
-  return await result;
 };
 
 // 0 또는 1의 값만 받아온다.
@@ -100,10 +111,9 @@ const modifyCheck = async function(userKey, listId, want, like, lists) {
 };
 
 const deleteCheck = async function(userKey, listId) {
+  const sql1 = `DELETE FROM Checks WHERE user_key = ${userKey} AND list_id = ${listId};`;
   try {
-    const sql1 = `DELETE FROM Checks WHERE user_key = ${userKey} AND list_id = ${listId};`;
     const result1 = await pool.execute(sql1);
-
     return result1;
   } catch (e) {
     throw createError(e);
