@@ -74,8 +74,13 @@ router.get("/userfolders/:userKey", function(req, res, next) {
 
   member
     .getUserFolders(userKey, folder)
-    .then(result => {
-      res.status(200).json(result);
+    .then(async folders => {
+      const promise = folders.map(async folder => {
+        const count = await list.getFolderListsCount(folder.folderId);
+        return { ...folder, listCount: count };
+      });
+      const result = await Promise.all(promise);
+      await res.status(200).json(result);
     })
     .catch(err => {
       next(err);
@@ -195,8 +200,13 @@ router.get("/usersfolders/:userKey", function(req, res, next) {
 
   member
     .getAllUserFolders(userKey, folder)
-    .then(result => {
-      res.status(200).json(result);
+    .then(async folders => {
+      const promise = folders.map(async folder => {
+        const count = await list.getFolderListsCount(folder.folderId);
+        return { ...folder, listCount: count };
+      });
+      const result = await Promise.all(promise);
+      await res.status(200).json(result);
     })
     .catch(err => {
       next(err);
@@ -228,7 +238,7 @@ router.delete("/:userKey/:folderId", function(req, res, next) {
     .getFolderLists(folderId)
     .then(result => {
       let tmp;
-      for(let i=0; i<result.length; i++) {
+      for (let i = 0; i < result.length; i++) {
         tmp = check.deleteCheck(userKey, result[i]["listId"]);
       }
       res.status(200).json(tmp);

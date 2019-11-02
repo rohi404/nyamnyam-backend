@@ -30,9 +30,18 @@ router.post("/", function(req, res, next) {
   const listId = req.body["list_id"];
 
   check
-    .createCheck(userKey, listId)
+    .checkListUser(userKey, listId)
     .then(user => {
-      res.status(200).json(user);
+      if (user) res.status(200).json(user);
+      else
+        check
+          .createCheck(userKey, listId)
+          .then(user => {
+            res.status(200).json(user);
+          })
+          .catch(err => {
+            next(err);
+          });
     })
     .catch(err => {
       next(err);
