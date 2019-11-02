@@ -4,9 +4,13 @@ const checks = require("../model/checks");
 
 const createCheck = async function(userKey, listId) {
   const sql1 = `INSERT INTO Checks (user_key, list_id) VALUES ('${userKey}', '${listId}');`;
-  const result = await pool.execute(sql1);
-  const checkId = result[0].insertId;
-  return await getCheck(checkId);
+  try {
+    const result = await pool.execute(sql1);
+    const checkId = result[0].insertId;
+    return await getCheck(checkId);
+  } catch (e) {
+    throw createError(e);
+  }
 };
 
 const getCheck = async function(checkId) {
@@ -20,10 +24,21 @@ const getCheck = async function(checkId) {
   return await checks.convertToCheck(checkResult[0]);
 };
 
+const checkListUser = async function(userKey, listId) {
+  const sql = `SELECT * FROM Checks WHERE list_id = ${listId} AND user_key = ${userKey}`;
+
+  try {
+    const [checkResult] = await pool.execute(sql);
+    if (checkResult.length == 0) return null;
+    return await checks.convertToCheck(checkResult[0]);
+  } catch (e) {
+    throw createError(e);
+  }
+};
+
 const getListUser = async function(userKey, listId) {
   const sql = `SELECT * FROM Checks WHERE list_id = ${listId} AND user_key = ${userKey}`;
   const [checkResult] = await pool.execute(sql);
-
   if (checkResult.length == 0) {
     throw createError(
       404,
@@ -31,7 +46,7 @@ const getListUser = async function(userKey, listId) {
     );
   }
 
-  return await await checks.convertToCheck(checkResult[0]);
+  return await checks.convertToCheck(checkResult[0]);
 };
 
 const getListUsers = async function(listId) {
@@ -89,6 +104,7 @@ const deleteCheck = async function(userKey, listId) {
 module.exports = {
   createCheck,
   getCheck,
+  checkListUser,
   getListUser,
   getListUsers,
   modifyCheck,
