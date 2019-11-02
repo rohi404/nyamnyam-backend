@@ -89,7 +89,8 @@ const modifyCheck = async function(userKey, listId, want, like, lists) {
       undefined,
       undefined,
       1,
-      1
+      1,
+      undefined
     );
 
     return await getListUser(userKey, listId);

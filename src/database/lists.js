@@ -61,16 +61,7 @@ const getFolderListsCount = async function(folderId) {
   }
 };
 
-const modifyList = async function(
-  listId,
-  listName,
-  listLocation,
-  listMemo,
-  listImage,
-  wantCount,
-  likeCount,
-  listVisited
-) {
+const modifyList = async function(listId, listName, listLocation, listMemo, listImage, wantCount, likeCount, listVisited) {
   const users = await checks.getListUsers(listId);
   const queries = [];
 
@@ -93,8 +84,7 @@ const modifyList = async function(
   if (wantCount != undefined) {
     if (wantCount === 1) {
       let count = 0;
-      let i;
-      for (i = 0; i < users.length; i++) {
+      for (let i = 0; i < users.length; i++) {
         count += users[i]["wantCheck"];
       }
       queries.push(`want_count=\'${count}\'`);
@@ -103,8 +93,7 @@ const modifyList = async function(
   if (likeCount != undefined) {
     if (likeCount === 1) {
       let count = 0;
-      let i;
-      for (i = 0; i < users.length; i++) {
+      for (let i = 0; i < users.length; i++) {
         count += users[i]["likeCheck"];
       }
       queries.push(`like_count=\'${count}\'`);

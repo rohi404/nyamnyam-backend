@@ -40,12 +40,7 @@ const getUserId = async function(Id) {
   return await users.convertToUser(userResult[0]);
 };
 
-const modifyUser = async function(
-  userKey,
-  userNickname,
-  userProfile,
-  userBackground
-) {
+const modifyUser = async function(userKey, userNickname, userProfile, userBackground) {
   const queries = [];
 
   if (userNickname != undefined) {
@@ -72,9 +67,8 @@ const modifyUser = async function(
 };
 
 const deleteUser = async function(userKey) {
-  const sql1 = `DELETE FROM Users WHERE user_key = ${userKey};`;
-
   try {
+    const sql1 = `DELETE FROM Users WHERE user_key = ${userKey};`;
     const result1 = await pool.execute(sql1);
 
     return result1;
