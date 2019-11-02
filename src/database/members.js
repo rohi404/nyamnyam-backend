@@ -14,7 +14,7 @@ const createMember = async function(userKey, folderId) {
     const memberId = result[0].insertId;
     return await getMember(memberId);
   } else {
-    return member;
+    return null;
   }
 };
 

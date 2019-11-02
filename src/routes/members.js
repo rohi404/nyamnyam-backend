@@ -9,6 +9,7 @@ const check = require("../database/checks");
  * @api {post} /members Create Member
  * @apiName CreateMember
  * @apiGroup Member
+ * @apiDescription  이미 Member Table에 저장되어 있는 경우 null 리턴함
  *
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
