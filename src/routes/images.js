@@ -118,7 +118,7 @@ router.get("/:imageId", function(req, res, next) {
  * @apiSuccessExample {json} Success:
  * HTTP/1.1 200 OK
  * {
- *     "imageId": 4,
+ *     "imageId": 1,
  *     "listId": 1,
  *     "url": "https://nyamnyam.s3.ap-northeast-2.amazonaws.",
  *     "order":0
