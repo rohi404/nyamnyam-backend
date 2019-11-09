@@ -15,8 +15,8 @@ const createCheck = async function(userKey, listId) {
 };
 
 const getCheck = async function(checkId) {
-  const sql = `SELECT * FROM Checks WHERE id = ${checkId}`;
   try {
+    const sql = `SELECT * FROM Checks WHERE id = ${checkId}`;
     const [checkResult] = await pool.execute(sql);
     if (checkResult.length == 0) {
       throw createError(404, `There is no checks with check Id is ${checkId}`);

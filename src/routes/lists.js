@@ -16,7 +16,8 @@ const { upload, deleteS3 } = require("../utills/multer-s3");
  *     "folder_id": 2
  *     "location": "서울시 동작구 흑석동 150-4",
  *     "memo": "수제버거 맛집",
- *     "file" : "aaaa.png"
+ *     "file" : "aaaa.png",
+ *     "file" : "bb.png",
  * }
  *
  * @apiSuccessExample {json} Success:
@@ -50,7 +51,7 @@ router.post("/", upload.array("file"), function(req, res, next) {
     .then(list => {
       if (files) {
         image
-          .createImage(list.listId, urls)
+          .createAllImages(list.listId, urls)
           .then(() => {
             res.status(200).json(list);
           })
@@ -152,16 +153,18 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  * @api {put} /lists/:listId Modify List
  * @apiName ModifyList
  * @apiGroup List
- * @apiDescription  list 변경 전, 각각의 이미지에 대한 변경사항을 먼저 images API로 처리해야함
  * @apiDescription  visited 필드 변경 시 0, 1로만 저장해야함(0 - 방문전, 1 - 방문후)
  *
  * @apiParam (path) {Number} listId listId.
- * @apiParam {Json} body body.
- * @apiParamExample {json} User Action:
+ * @apiParam {FormData} file input의 name=file 이여야 함.
+ * @apiParamExample {FormData} User Action:
  * {
- *     "name": "얌얌버거",
- *     "location": "서울시 동작구 흑석동 80-1",
- *     "memo": "베이컨 꼭 추가해야함",
+ *     "name": "냠냠버거",
+ *     "folder_id": 2
+ *     "location": "서울시 동작구 흑석동 150-4",
+ *     "memo": "수제버거 맛집",
+ *     "file" : "aaaa.png",
+ *     "file" : "bb.png",
  *     "want_count": 1,
  *     "like_count": 2,
  *     "visited": 1
@@ -182,13 +185,18 @@ router.get("/folderlists/:folderId", function(req, res, next) {
  *     "reg_date": "2018-11-24 14:52:30"
  * }
  */
-router.put("/:listId", async function(req, res, next) {
+router.put("/:listId", upload.array("file"), async function(req, res, next) {
   const listId = req.params["listId"];
+
+  //기존이미지 삭제
   const images = await image.getListImage(listId);
-  const listImage =
-    images.length == 0
-      ? "default-image"
-      : images.filter(img => img.order === 0);
+  for await (img of images) {
+    image.deleteImage(img.imageId);
+  }
+
+  const files = req.files.length > 0;
+  const urls = files ? req.files.map(file => file.location) : null;
+  const listImage = !urls ? "default-image" : urls[0];
 
   list
     .modifyList(
@@ -196,13 +204,24 @@ router.put("/:listId", async function(req, res, next) {
       req.body["name"],
       req.body["location"],
       req.body["memo"],
-      listImage["url"],
+      listImage,
       req.body["want_count"],
       req.body["like_count"],
       req.body["visited"]
     )
     .then(list => {
-      res.status(200).json(list);
+      if (files) {
+        image
+          .createAllImages(listId, urls)
+          .then(() => {
+            res.status(200).json(list);
+          })
+          .catch(err => {
+            next(err);
+          });
+      } else {
+        res.status(200).json(list);
+      }
     })
     .catch(err => {
       next(err);
