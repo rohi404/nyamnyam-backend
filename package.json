@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "apidoc": "^0.17.7",
-    "aws-sdk": "^2.526.0",
+    "aws-sdk": "^2.814.0",
     "cookie-parser": "^1.4.4",
     "csurf": "^1.10.0",
     "debug": "~2.6.9",
