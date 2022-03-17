@@ -24,7 +24,7 @@
     "nodemailer": "^6.3.0",
     "nodemailer-smtp-transport": "^2.7.4",
     "pug": "^2.0.4",
-    "swagger-ui": "^3.24.0",
+    "swagger-ui": "^4.1.3",
     "uuid": "^3.3.3"
   },
   "description": "🍰Food Bucket List",
